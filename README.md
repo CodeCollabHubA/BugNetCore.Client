@@ -1,1 +1,1 @@
-# BugNetCore. Client
+# BugNetCore.Client

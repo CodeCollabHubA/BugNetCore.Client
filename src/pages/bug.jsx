@@ -9,7 +9,7 @@ export default function BugPage() {
   return (
     <>
       <Helmet>
-        <title> Bug | Minimal UI </title>
+        <title> Bug | BugNet Core 🐞 </title>
       </Helmet>
 
       <BugView />
@@ -21,7 +21,6 @@ export async function loader() {
 
   const {records: bugs} = await getAllBugsWithFilterPaginationAndSorting();
 
-  console.log(bugs);
 
   return bugs;
 }
