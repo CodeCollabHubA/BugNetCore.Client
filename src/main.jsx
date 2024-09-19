@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import ThemeProvider from 'src/theme';
 
+import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'react-hot-toast';
 import App from './app';
 
@@ -15,6 +16,7 @@ root.render(
   <HelmetProvider>
     <Suspense>
       <ThemeProvider>
+        <Analytics />
         <Toaster />
         <App />
       </ThemeProvider>
