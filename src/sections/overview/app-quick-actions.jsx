@@ -6,28 +6,31 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-
+import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
 export default function AppQuickActions({ title, subheader, list, ...other }) {
+
   return (
-    <Card {...other}>
+    <Card  {...other}>
       <CardHeader title={title} subheader={subheader} />
 
+      <Link to='/'>
       <Box
         sx={{
           p: 3,
           gap: 2,
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
+          
         }}
       >
         {list.map((site) => (
           <Paper
-            key={site.name}
-            variant="outlined"
-            sx={{ py: 2.5, textAlign: 'center', borderStyle: 'dashed' }}
+          key={site.name}
+          variant="outlined"
+          sx={{ py: 2.5, textAlign: 'center',":hover":{boxShadow:3},borderBlockColor:'dark' }}
           >
             <Box sx={{ mb: 0.5 }}>{site.icon}</Box>
 
@@ -37,6 +40,7 @@ export default function AppQuickActions({ title, subheader, list, ...other }) {
           </Paper>
         ))}
       </Box>
+        </Link>
     </Card>
   );
 }

@@ -1,9 +1,11 @@
-import React from 'react';
+import  { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import http from 'src/services/httpService';
+import { getProjectData } from 'src/services/projectApiService';
+import { createBug,updateBug } from 'src/services/bugApiService';
+
 
 const style = {
   position: 'absolute',
@@ -19,54 +21,73 @@ const style = {
 // Options
 const categories = ['UI', 'Backend', 'Frontend', 'Database', 'Other'];
 const severities = ['Urgent', 'High', 'Medium', 'Low'];
-const statuses = ['Reported', 'InProgress', 'Resolved', 'Testing'];
 
-const CreateBugModal = ({ open, handleClose }) => {
+
+
+const CreateBugModal = ({ open, handleClose,bug}) => {
+  // console.log(bug)
+  const [projects,setProjects]=useState([])
+  useEffect(()=>{
+    const getproject=async()=>{
+      try {
+        const data = await getProjectData()
+        setProjects(data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getproject()
+  },[])
+
+
   const initialValues = {
-    description: '',
-    category: '',
-    customerAssignedSeverity: '',
-    status: '',
-    projectId: '',
-    customerId: '',
-    screenshotFile: null,
+    description: bug?.description||'',
+    category: bug?.category||'',
+    customerAssignedSeverity: bug?.customerAssignedSeverity||'',
+    projectName:bug?.project.name||'',
+    screenshotFile: bug?.screenshot||null,
   };
 
   const validationSchema = Yup.object({
-    description: Yup.string().required('Required'),
-    category: Yup.string().required('Required'),
-    customerAssignedSeverity: Yup.string().required('Required'),
-    status: Yup.string().required('Required'),
-    projectId: Yup.string().required('Required'),
-    customerId: Yup.string().required('Required'),
-    screenshotFile: Yup.mixed(),
+    description: Yup.string().required('enter a description'),
+    category: Yup.string().required('select a category'),
+    customerAssignedSeverity: Yup.string().required('select a severity'),
+    projectName: Yup.string().required('select a project name'),
+    screenshot:Yup.mixed()
   });
 
   const handleSubmit = async (values) => {
+    console.log('inside')
+    console.log(values)
+    const {id} = projects.find(e=>e.name === values.projectName)
     const formData = new FormData();
-    formData.append('Description', values.description);
-    formData.append('Category', values.category);
-    formData.append('CustomerAssignedSeverity', values.customerAssignedSeverity);
-    formData.append('Status', values.status);
-    formData.append('ProjectId', values.projectId);
-    formData.append('CustomerId', values.customerId);
-    if (values.screenshotFile) {
-      formData.append('ScreenshotFile', values.screenshotFile);
-    }
+    formData.description =values.description
+    formData.category =values.category
+    formData.customerAssignedSeverity =values.customerAssignedSeverity
+    formData.status ="Reported"
+    formData.screenshot= values.screenshot
+    formData.projectId =id
+    
+    
+    console.log(formData)
 
     try {
-      const response = await http.post('/api/v1-Beta/Bug', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      console.log('Bug submitted successfully:', response.data);
+
+      if(bug){
+        formData.id = bug.id
+        formData.rowVersion = bug.rowVersion
+        const data = await updateBug(bug.id,{...formData})
+        console.log('Bug submitted successfully:',data)
+      }else{
+      
+      const data = await createBug({...formData})
+      console.log('Bug submitted successfully:',data );
+      }
       handleClose(); // Close modal after submission
     } catch (error) {
       console.error('Error submitting bug:', error);
     }
   };
-
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -82,6 +103,7 @@ const CreateBugModal = ({ open, handleClose }) => {
                 {({ field }) => (
                   <TextField
                     {...field}
+                    
                     label="Description"
                     variant="outlined"
                     fullWidth
@@ -89,12 +111,14 @@ const CreateBugModal = ({ open, handleClose }) => {
                   />
                 )}
               </Field>
+              {/* <ErrorMessage name="description" component="span" className='text-red-600' /> */}
               <Field name="category">
                 {({ field }) => (
                   <Autocomplete
                     {...field}
+                  
                     options={categories}
-                    onChange={(event, value) => setFieldValue('category', value)}
+                    onChange={(event,value) => {setFieldValue('category', value)}}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -107,12 +131,14 @@ const CreateBugModal = ({ open, handleClose }) => {
                   />
                 )}
               </Field>
+              {/* <ErrorMessage name="category" component="span" className='text-red-600'/> */}
               <Field name="customerAssignedSeverity">
                 {({ field }) => (
                   <Autocomplete
                     {...field}
+                    
                     options={severities}
-                    onChange={(event, value) => setFieldValue('customerAssignedSeverity', value)}
+                    onChange={(event, value) =>{setFieldValue('customerAssignedSeverity', value)}}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -125,59 +151,40 @@ const CreateBugModal = ({ open, handleClose }) => {
                   />
                 )}
               </Field>
-              <Field name="status">
+              {/* <ErrorMessage name="customerAssignedSeverity" component="span" className='text-red-600' /> */}
+              <Field name="projectName">
                 {({ field }) => (
                   <Autocomplete
-                    {...field}
-                    options={statuses}
-                    onChange={(event, value) => setFieldValue('status', value)}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Status"
+                  {...field}
+                  options={projects.map(e=>e.name)}
+                  onChange={ value => {setFieldValue('projectName', value)}}
+                  renderInput={(params) => (
+                    <TextField
+                    {...params}
+                        label="Project Name"
                         variant="outlined"
                         fullWidth
                         margin="normal"
                       />
                     )}
-                  />
-                )}
+                    />
+                  )}
               </Field>
-              <Field name="projectId">
+              {/* <ErrorMessage name="projecName" component="span" className='text-red-600' /> */}
+              <Field name="screenshot" >
                 {({ field }) => (
                   <TextField
-                    {...field}
-                    label="Project ID"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
+                  {...field}
+                  value={undefined}
+                  type='file'
+                  onChange={(event) => {setFieldValue('screenshot',event.currentTarget.files[0])                    
+                  }}
+                  fullWidth 
+                  margin="normal"
                   />
                 )}
               </Field>
-              <Field name="customerId">
-                {({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Customer ID"
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                  />
-                )}
-              </Field>
-              <Field name="screenshotFile">
-                {({ field }) => (
-                  <TextField
-                    {...field}
-                    type="file"
-                    onChange={(event) => {
-                      setFieldValue('screenshotFile', event.currentTarget.files[0]);
-                    }}
-                    fullWidth
-                    margin="normal"
-                  />
-                )}
-              </Field>
+
               <Button type="submit" variant="contained" color="primary">
                 Submit
               </Button>
@@ -193,4 +200,5 @@ export default CreateBugModal;
 CreateBugModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
+  bug:PropTypes.object
 };

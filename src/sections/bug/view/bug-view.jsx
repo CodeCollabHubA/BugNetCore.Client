@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useRouteLoaderData } from 'react-router-dom';
 
+
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -22,7 +23,7 @@ import BugTableHead from '../bug-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import BugTableToolbar from '../bug-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import CreateBugModal from '../create-bug-modal';
+import CreateBugModal from '../bug-modal';
 
 // ----------------------------------------------------------------------
 
@@ -98,9 +99,9 @@ export default function BugPage() {
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  { id: 'id', label: 'Id' },
-                  { id: 'description', label: 'Description' },
-                  { id: 'projectName', label: 'Project Name' },
+                  { id: 'bugId', label: 'Bug Id'},
+                  { id: 'projectName', label: 'Project Name'},
+                  { id: 'description', label: 'Description'},
                   { id: 'category', label: 'category', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },

@@ -7,7 +7,7 @@ import { AppView } from 'src/sections/overview/view';
 export default function AppPage() {
   return (
     <>
-      <Helmet>
+      <Helmet> 
         <title> Dashboard | BugNet Core 🐞 </title>
       </Helmet>
 

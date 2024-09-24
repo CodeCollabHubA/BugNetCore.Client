@@ -44,8 +44,7 @@ const routes = createBrowserRouter([
       { path: 'user', element: <UserPage /> },
       { path: 'products', element: <ProductsPage /> },
       { path: 'blog', element: <BlogPage /> },
-      {
-        path: 'chat/:requestId/:userId',
+      { path: 'chat/:requestId/:userId',
         element: <ChatPage />,
       },
     ],

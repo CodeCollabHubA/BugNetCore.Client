@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types';
 import toast, { Toaster } from 'react-hot-toast';
-
+import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -9,19 +8,30 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { Await, defer, useRouteLoaderData } from 'react-router-dom';
-import { getAllCommentsWithFilterPaginationAndSorting } from 'src/services/commentApiService';
+import { Await, defer, useParams, useRouteLoaderData } from 'react-router-dom';
+import {  createComment,getAllCommentsWithFilterPaginationAndSorting } from 'src/services/commentApiService';
 import { Suspense } from 'react';
-import { CircularProgress } from '@mui/material';
+import { Autocomplete, CircularProgress } from '@mui/material';
+import { Formik,Form,Field } from 'formik';
 
 // import { bugs } from 'src/_mock/bug';
 
 // ----------------------------------------------------------------------
 
-export default function BugDetailView({ bugId }) {
+export default function BugDetailView() {
+  const {role} = localStorage
+  
+  const { bugId } = useParams();
   const { comments } = useRouteLoaderData('bug_details');
   const bugs = useRouteLoaderData('bugs');
   const bug = bugs.find((b) => b.id === bugId);
+  const developers=['Ahmed','Mohammed']
+  const initialValues ={
+    comment:''
+  }
+  const validationSchema = Yup.object({
+    comment: Yup.string().required(),
+  });
 
   // create a promise that resolve after 2 seconds
   const sendSupportRequest = () =>
@@ -30,6 +40,7 @@ export default function BugDetailView({ bugId }) {
         resolve();
       }, 2000);
     });
+    // 
   const handleLiveSupportRequest = () => {
     toast.promise(sendSupportRequest(), {
       loading: 'Sending a Live Support Request...',
@@ -38,21 +49,42 @@ export default function BugDetailView({ bugId }) {
       duration: 5000, // Set the duration in milliseconds (e.g. 5000 for 5 seconds)
     });
   };
+
+  const editPage =()=>{
+    console.log('editing')
+  }
   const renderImg = (
     <Box
       component="img"
       alt={bug.id}
-      src={bug.screenshot}
+      src={`${bug.screenshot}`}
       sx={{
         top: 0,
-        width: '100%',
-        height: '400px',
-        objectFit: 'fill',
+        width: '20rem',
+        height: '20rem',
+        objectFit: 'cover',
         position: 'absolute',
       }}
     />
   );
-
+  const handleSubmitComment = async(values)=>{
+    console.log('inside')
+    console.log(values)
+    const formData = new FormData();
+    formData.commentText =values.comment
+    formData.senderId = bug.customer.id
+    formData.bugId = bugId
+    console.log(formData)
+    try {
+      const res = await createComment({...formData})
+      console.log('submitted comment is success',res)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  const handleSave =()=>{
+    console.log('saved')
+  }
   return (
     <Container>
       <Toaster />
@@ -71,13 +103,13 @@ export default function BugDetailView({ bugId }) {
           >
             <Typography variant="h6">Bug Detail:</Typography>
             <Button
-              onClick={handleLiveSupportRequest}
+              onClick={role==='Admin'?editPage:handleLiveSupportRequest}
               variant="contained"
               size="medium"
               color="error"
-              title="Request Live Support"
+              title={role==='Admin'?'Edit Page':"Request Live Support"} // edit here for  edit or support button in term of user role ##############
             >
-              Request Live Support
+              {role==='Admin'?'Edit Page':"Request Live Support"}
             </Button>
           </Stack>
 
@@ -98,24 +130,54 @@ export default function BugDetailView({ bugId }) {
               <Typography variant="body2">
                 <strong>Customer Assigned Severity:</strong> {bug.customerAssignedSeverity}
               </Typography>
+              {role==='Admin'?
               <Typography variant="body2">
                 <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
               </Typography>
+              :null}
               <Typography variant="body2">
                 <strong>Status: </strong> {bug.status}
               </Typography>
               <Typography variant="body2">
-                <strong>Project Name: </strong> {bug.projectName}
+                <strong>Project Name: </strong> {bug.project.name}
               </Typography>
               <Typography variant="body2">
-                <strong>Customer Name: </strong> {bug.customerName}
+                <strong>Customer Name: </strong> {bug.customer.username}
               </Typography>
               <Typography variant="body2">
-                <strong>Developer Name: </strong> {bug.devName}
+                
+                {role==='Admin'?
+                <Formik
+                initialValues=''
+                onSubmit={handleSave}
+              >
+                {({ setFieldValue }) => (
+                  <Field name="developerName">
+                  {({ field }) => (
+                    <Autocomplete
+                    {...field}
+                    options={developers}
+                    onChange={ value => {setFieldValue('developerName', value)}}
+                    renderInput={(params) => (
+                      <TextField
+                      {...params}
+                          label="Developer Name"
+                          variant="outlined"
+                          
+                          margin="normal"
+                        />
+                      )}
+                      />
+                    )}
+                </Field>)}
+                </Formik>
+                :<> <strong>Developer Name: </strong> {bug.dev} </>}
               </Typography>
             </Stack>
           </Card>
         </Grid>
+        {/* begin of comments sections ##################### */}
+
         <Grid item xs={12} md={6} lg={4}>
           <Stack spacing={2} sx={{ paddingBottom: 3 }}>
             <Typography variant="h6">Comments:</Typography>
@@ -154,29 +216,42 @@ export default function BugDetailView({ bugId }) {
                   </Await>
                 </Suspense>
               </Box>
-
               <Box sx={{ display: 'flex', mt: 2 }}>
-                <TextField
-                  label="Your Comment"
-                  variant="outlined"
-                  size="small"
-                  sx={{ flexGrow: 1, mr: 2 }}
-                />
-                <Button variant="contained" color="primary">
-                  Send
-                </Button>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmitComment}
+              >
+              <Form>
+                <Field name="comment">
+                {({ field }) => (
+                  <TextField
+                    {...field}
+                    
+                    label="Your Comment"
+                    variant="outlined"
+                    size="small"
+                    sx={{ flexGrow: 1, mr: 2 }}
+                  />
+                )}
+              </Field>
+                  <Button type='submit' variant="contained" color="primary">
+                    Send
+                  </Button>
+                </Form>
+              
+              </Formik>
+                
               </Box>
             </Stack>
           </Card>
         </Grid>
+              {/* end of comment section ################### */}
       </Grid>
     </Container>
   );
 }
 
-BugDetailView.propTypes = {
-  bugId: PropTypes.string.isRequired,
-};
 
 async function loadComments(id) {
   const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);

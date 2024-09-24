@@ -28,6 +28,12 @@ export const getAllProjectsWithFilterPaginationAndSorting = async (
   return data;
 };
 
+export const getProjectData =async ()=>{
+  const {data} = await http.get(projectApi)
+  return data.records 
+}
+
+
 // use the method above to calculate the count below
 export const countProjectsByStatus = async (status = null) => {
   const data = await getAllProjectsWithFilterPaginationAndSorting(

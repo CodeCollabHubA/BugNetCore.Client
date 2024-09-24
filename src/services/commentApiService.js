@@ -36,6 +36,7 @@ export const getCommentById = async (id) => {
 };
 
 export const createComment = async (req) => {
+  console.log(req,'deeper')
   const { data } = await http.post(`${commentApi}`, req);
 
   return data;

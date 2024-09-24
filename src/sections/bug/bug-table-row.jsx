@@ -15,12 +15,15 @@ import { deleteBug } from 'src/services/bugApiService';
 import toast from 'react-hot-toast';
 import Iconify from 'src/components/iconify';
 import ConfirmationDialog from '../confirmation-dialog';
+import BugModal from './bug-modal';
 
 // ----------------------------------------------------------------------
 // id, description, projectName, category, status;
 export default function BugTableRow({ bug }) {
+  const [openCreateModal, setOpenCreateModal] = useState(false);
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [edit,setEdit]=useState(bug)
   const navigate = useNavigate();
 
   const handleOpenMenu = (event) => {
@@ -30,7 +33,11 @@ export default function BugTableRow({ bug }) {
   const handleCloseMenu = () => {
     setOpen(null);
   };
-
+  const handleEdit=()=>{
+    setEdit(bug)
+    console.log(bug)
+    console.log(bug.id)
+  }
   const handleBugDeletion = async () => {
     const asyncOperation = async () => {
       setOpenDeleteDialog(false);
@@ -63,8 +70,10 @@ export default function BugTableRow({ bug }) {
       statusColor = 'info';
       break;
   }
+
   return (
     <>
+    <BugModal open={openCreateModal} handleClose={() => setOpenCreateModal(false)} bug={edit} />
       <ConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
@@ -86,9 +95,10 @@ export default function BugTableRow({ bug }) {
           </Typography>
         </TableCell>
 
-        <TableCell>{bug.description}</TableCell>
 
-        <TableCell>{bug.projectName}</TableCell>
+        <TableCell>{bug.project.name}</TableCell>
+
+        <TableCell>{bug.description}</TableCell>
 
         <TableCell align="center">{bug.category}</TableCell>
 
@@ -113,7 +123,11 @@ export default function BugTableRow({ bug }) {
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={()=>{
+          handleCloseMenu()
+          setOpenCreateModal(true)
+          handleEdit()
+        }}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>

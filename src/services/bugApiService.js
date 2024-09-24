@@ -35,13 +35,20 @@ export const getBugById = async (id) => {
 };
 
 export const createBug = async (req) => {
-  const { data } = await http.post(`${bugApi}`, req);
+
+  const { data } = await http.post(`${bugApi}`, req,{
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }});
 
   return data;
 };
 
 export const updateBug = async (id, req) => {
-  const { data } = await http.put(`${bugApi}/${id}`, req);
+  console.log(id,req)
+  const { data } = await http.put(`${bugApi}/${id}`, req,{headers: {
+    'Content-Type': 'multipart/form-data',
+  }});
 
   return data;
 };

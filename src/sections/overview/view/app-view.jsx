@@ -67,6 +67,7 @@ export default function AppView() {
                   justifyContent: 'center',
                   alignItems: 'center',
                   height: '100vh',
+                  
                 }}
               >
                 <CircularProgress />
@@ -163,16 +164,20 @@ export default function AppView() {
         <Grid xs={12} md={6} lg={8}>
           <AppQuickActions
             title="Quick actions"
+            
             list={[
               {
+                path:'ReportCreate',
                 name: 'Report a Bug',
                 icon: <Iconify icon="ant-design:bug-filled" color="#DF3E30" width={32} />,
               },
               {
+                path:'liveSuport',
                 name: 'Request Live Support',
                 icon: <Iconify icon="fluent:person-support-24-filled" color="#0FFF50" width={32} />,
               },
               {
+                path:'bug',
                 name: 'View Bugs',
                 icon: <Iconify icon="streamline:bug-virus-browser" color="#1877F2" width={32} />,
               },
