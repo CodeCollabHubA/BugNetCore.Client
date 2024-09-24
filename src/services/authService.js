@@ -25,7 +25,7 @@ export async function signUp(username, email, password, confirmPassword) {
     await toast.promise(http.post(regApiEndpoint, { username, email, password, confirmPassword }), {
       loading: 'We are processing your request! please wait',
       success: 'Registeration successful, please check your email to be able to login!',
-      duration: 60000,
+      duration: 90000,
     });
     response.success = true;
   } catch (error) {
