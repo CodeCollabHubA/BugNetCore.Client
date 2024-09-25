@@ -51,6 +51,9 @@ export default function BugPage() {
   };
 
   const handleChangePage = (event, newPage) => {
+    // TODO: Complete the code below to fetch the data as the user goes to next page
+    // const numberOfBugsNeeded = (page + 1) * rowsPerPage;
+    
     setPage(newPage);
   };
 
