@@ -23,7 +23,7 @@ import BugTableHead from '../bug-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import BugTableToolbar from '../bug-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import CreateBugModal from '../bug-modal';
+import BugModal from '../bug-modal';
 
 // ----------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ export default function BugPage() {
 
   return (
     <Container>
-      <CreateBugModal open={openCreateModal} handleClose={() => setOpenCreateModal(false)} />
+      <BugModal open={openCreateModal} handleClose={() => setOpenCreateModal(false)} />
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Bugs</Typography>

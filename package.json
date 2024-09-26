@@ -45,6 +45,7 @@
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.16.0",
     "simplebar-react": "^3.2.4",
+    "vercel": "^37.5.4",
     "yup": "^1.4.0"
   },
   "devDependencies": {

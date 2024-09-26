@@ -6,17 +6,17 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import ConditionalRendering from './app-util';
 
 // ----------------------------------------------------------------------
 
 export default function AppQuickActions({ title, subheader, list, ...other }) {
-
+  const [openModal, setOpenModal] = useState(false);
+  console.log(list)
   return (
     <Card  {...other}>
       <CardHeader title={title} subheader={subheader} />
-
-      <Link to='/'>
       <Box
         sx={{
           p: 3,
@@ -25,22 +25,24 @@ export default function AppQuickActions({ title, subheader, list, ...other }) {
           gridTemplateColumns: 'repeat(2, 1fr)',
           
         }}
-      >
+        >
         {list.map((site) => (
+          <ConditionalRendering path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
           <Paper
           key={site.name}
           variant="outlined"
           sx={{ py: 2.5, textAlign: 'center',":hover":{boxShadow:3},borderBlockColor:'dark' }}
           >
-            <Box sx={{ mb: 0.5 }}>{site.icon}</Box>
+            <Box onClick={site.path==='ReportCreate'?() => setOpenModal(true):null} sx={{ mb: 0.5 }}>{site.icon}</Box>
 
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               {site.name}
             </Typography>
           </Paper>
+        </ConditionalRendering>
         ))}
       </Box>
-        </Link>
+
     </Card>
   );
 }

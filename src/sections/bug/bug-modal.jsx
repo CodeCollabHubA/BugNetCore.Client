@@ -24,13 +24,13 @@ const severities = ['Urgent', 'High', 'Medium', 'Low'];
 
 
 
-const CreateBugModal = ({ open, handleClose,bug}) => {
-  // console.log(bug)
+const BugModal = ({ open, handleClose, bug}) => {
   const [projects,setProjects]=useState([])
   useEffect(()=>{
     const getproject=async()=>{
       try {
         const data = await getProjectData()
+        console.log(data)
         setProjects(data)
       } catch (error) {
         console.log(error)
@@ -156,8 +156,8 @@ const CreateBugModal = ({ open, handleClose,bug}) => {
                 {({ field }) => (
                   <Autocomplete
                   {...field}
-                  options={projects.map(e=>e.name)}
-                  onChange={ value => {setFieldValue('projectName', value)}}
+                  options={projects.map(project=>project.name)}
+                  onChange={ (event,value) => {setFieldValue('projectName', value)}}
                   renderInput={(params) => (
                     <TextField
                     {...params}
@@ -196,8 +196,8 @@ const CreateBugModal = ({ open, handleClose,bug}) => {
   );
 };
 
-export default CreateBugModal;
-CreateBugModal.propTypes = {
+export default BugModal;
+BugModal.propTypes = {
   open: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   bug:PropTypes.object
