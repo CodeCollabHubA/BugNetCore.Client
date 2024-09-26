@@ -18,9 +18,14 @@ export default function BugPage() {
 }
 
 export async function loader() {
-
-  const {records: bugs} = await getAllBugsWithFilterPaginationAndSorting();
-
+  const { records: bugs } = await getAllBugsWithFilterPaginationAndSorting(
+    null,
+    null,
+    null,
+    null,
+    25,
+    1
+  );
 
   return bugs;
 }
