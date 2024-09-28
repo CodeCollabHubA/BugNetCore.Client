@@ -10,9 +10,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Await, defer, useParams, useRouteLoaderData } from 'react-router-dom';
 import {  createComment,getAllCommentsWithFilterPaginationAndSorting } from 'src/services/commentApiService';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik,Form,Field } from 'formik';
+import { updateBug } from 'src/services/bugApiService';
 
 // import { bugs } from 'src/_mock/bug';
 
@@ -20,20 +21,29 @@ import { Formik,Form,Field } from 'formik';
 
 export default function BugDetailView() {
   const {role} = localStorage
-  
+  const severities = ['Urgent', 'High', 'Medium', 'Low'];
   const { bugId } = useParams();
   const { comments } = useRouteLoaderData('bug_details');
+  const [comment,setComment] = useState([...comments])
   const bugs = useRouteLoaderData('bugs');
   const bug = bugs.find((b) => b.id === bugId);
   const developers=['Ahmed','Mohammed']
+
   const initialValues ={
-    comment:''
+    commentText:'',
+  }
+  const devinitialValues ={
+    developerName:'',
+    adminAssignedPriority:''
   }
   const validationSchema = Yup.object({
-    comment: Yup.string().required(),
+    commentText: Yup.string().required(),
   });
-
-  // create a promise that resolve after 2 seconds
+  const devValidationSchema = Yup.object({
+    developerName: Yup.string(),
+    adminAssignedPriority: Yup.string(),
+  });
+ 
   const sendSupportRequest = () =>
     new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -60,30 +70,53 @@ export default function BugDetailView() {
       src={`${bug.screenshot}`}
       sx={{
         top: 0,
-        width: '20rem',
         height: '20rem',
-        objectFit: 'cover',
-        position: 'absolute',
+        position: 'relative',
+        margin:'1rem ',
+        borderRadius:'1rem'
       }}
     />
   );
-  const handleSubmitComment = async(values)=>{
-    console.log('inside')
-    console.log(values)
+
+
+  const handleSubmitComment = async(values,{resetForm})=>{
+
     const formData = new FormData();
-    formData.commentText =values.comment
+    formData.commentText =values.commentText
     formData.senderId = bug.customer.id
     formData.bugId = bugId
-    console.log(formData)
+ 
+
     try {
+      resetForm()
       const res = await createComment({...formData})
+      const newComment = [...comments]
+      newComment.push({...res})
+      setComment(newComment)
       console.log('submitted comment is success',res)
     } catch (error) {
       console.error(error)
+      
     }
   }
-  const handleSave =()=>{
-    console.log('saved')
+  const handleSave =async(values)=>{
+    console.log('insideSaving')
+    const formData = new FormData();
+    formData.dev =values.developerName
+    formData.adminAssignedPriority= values.adminAssignedPriority
+    formData.bugId =bug.id
+    formData.description= bug.description
+    formData.status= bug.status
+    formData.ProjectId= bug.project.id
+    formData.category= bug.category
+    
+    try {
+        const data = await updateBug(bugId,{...formData})
+        console.log('Developer Added successfully:',data)
+    }catch(ex){
+      console.log(ex)
+    }
+
   }
   return (
     <Container>
@@ -93,7 +126,7 @@ export default function BugDetailView() {
       </Typography>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={6} lg={8}>
+        <Grid item xs={12} md={6} lg={7}>
           <Stack
             spacing={{ xs: 1, sm: 2 }}
             direction={{ xs: 'row' }}
@@ -101,7 +134,7 @@ export default function BugDetailView() {
             justifyContent={{ xs: 'space-between' }}
             sx={{ paddingBottom: 3 }}
           >
-            <Typography variant="h6">Bug Detail:</Typography>
+            <Typography variant="h5">Bug Detail:</Typography>
             <Button
               onClick={role==='Admin'?editPage:handleLiveSupportRequest}
               variant="contained"
@@ -114,7 +147,7 @@ export default function BugDetailView() {
           </Stack>
 
           <Card>
-            <Box sx={{ pt: '56%', position: 'relative' }}>{renderImg}</Box>
+            <Box sx={{display:'flex',justifyContent:'center',  position: 'relative' }}>{renderImg}</Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
               <Typography variant="subtitle2">
@@ -130,11 +163,6 @@ export default function BugDetailView() {
               <Typography variant="body2">
                 <strong>Customer Assigned Severity:</strong> {bug.customerAssignedSeverity}
               </Typography>
-              {role==='Admin'?
-              <Typography variant="body2">
-                <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
-              </Typography>
-              :null}
               <Typography variant="body2">
                 <strong>Status: </strong> {bug.status}
               </Typography>
@@ -144,43 +172,74 @@ export default function BugDetailView() {
               <Typography variant="body2">
                 <strong>Customer Name: </strong> {bug.customer.username}
               </Typography>
-              <Typography variant="body2">
                 
                 {role==='Admin'?
                 <Formik
-                initialValues=''
+                initialValues={devinitialValues}
+                validationSchema={devValidationSchema}
                 onSubmit={handleSave}
               >
                 {({ setFieldValue }) => (
-                  <Field name="developerName">
-                  {({ field }) => (
-                    <Autocomplete
-                    {...field}
-                    options={developers}
-                    onChange={ value => {setFieldValue('developerName', value)}}
-                    renderInput={(params) => (
-                      <TextField
-                      {...params}
-                          label="Developer Name"
-                          variant="outlined"
-                          
-                          margin="normal"
-                        />
-                      )}
-                      />
-                    )}
-                </Field>)}
+                  <Form>
+                    <Field name="adminAssignedPriority">
+                      {({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={severities}
+                          onChange={ (event,value)=> {setFieldValue('adminAssignedPriority', value)}}
+                          renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="AssignedPriority"
+                            variant="outlined"
+                            margin='dense'
+                            size="small"
+                            sx={{width:'60%'}}
+                            />
+                          )}/>
+                        )}
+                    </Field>
+                    <Field name="developerName">
+                      {({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={developers}
+                          onChange={ (event,value)=> {setFieldValue('developerName', value)}}
+                          renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Developer Name"
+                            variant="outlined"
+                            margin='dense'
+                            size="small"
+                            sx={{width:'60%'}}
+                            />
+                          )}/>
+                        )}
+                    </Field>
+                    
+                    <Button type="submit" variant="contained" sx={{mt:'.5rem'}} color="primary">
+                      Save
+                    </Button>
+                  </Form>
+                  )}
                 </Formik>
-                :<> <strong>Developer Name: </strong> {bug.dev} </>}
-              </Typography>
+                :<>
+                <Typography variant="body2">
+                <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
+                </Typography>
+                <Typography variant="body2"> <strong>Developer Name: </strong> {bug.dev} </Typography>
+                </>
+                }
+              
             </Stack>
           </Card>
         </Grid>
         {/* begin of comments sections ##################### */}
 
-        <Grid item xs={12} md={6} lg={4}>
-          <Stack spacing={2} sx={{ paddingBottom: 3 }}>
-            <Typography variant="h6">Comments:</Typography>
+        <Grid item xs={12} md={6} lg={5}>
+          <Stack spacing={2} sx={{ paddingBottom: 4 }}>
+            <Typography variant="h5">Comments:</Typography>
           </Stack>
 
           <Card>
@@ -194,6 +253,7 @@ export default function BugDetailView() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         height: '100vh',
+                        
                       }}
                     >
                       <CircularProgress />
@@ -201,33 +261,34 @@ export default function BugDetailView() {
                   }
                 >
                   <Await resolve={comments}>
-                    {(loadedComments) =>
-                      loadedComments.map((comment) => (
-                        <Box key={comment.id} sx={{ mb: 2 }}>
+                    {
+                      comment.map((item) => (
+                        <Box key={item.id} sx={{ mb: 2 }}>
                           <Typography variant="subtitle2">
                             <strong>
-                              {comment.sender.username} ({comment.sender.userRole}):
+                              {item.sender.username} ({item.sender.userRole}):
                             </strong>
                           </Typography>
-                          <Typography variant="body2">{comment.commentText}</Typography>
+                          <Typography variant="body2">{item.commentText}</Typography>
                         </Box>
                       ))
                     }
                   </Await>
                 </Suspense>
               </Box>
-              <Box sx={{ display: 'flex', mt: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent:'center', mt: 2 }}>
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={handleSubmitComment}
               >
+                
               <Form>
-                <Field name="comment">
+                <Field name="commentText">
                 {({ field }) => (
                   <TextField
                     {...field}
-                    
+                    onT
                     label="Your Comment"
                     variant="outlined"
                     size="small"
@@ -239,7 +300,7 @@ export default function BugDetailView() {
                     Send
                   </Button>
                 </Form>
-              
+
               </Formik>
                 
               </Box>
@@ -253,13 +314,19 @@ export default function BugDetailView() {
 }
 
 
-async function loadComments(id) {
-  const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
-  return records;
-}
+
 export async function loader({ request, params }) {
   const id = params.bugId;
-  return defer({
-    comments: loadComments(id),
-  });
+  const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id)
+  return defer({comments: records});
 }
+// async function loadComments(id) {
+//   const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
+//   return records;
+// }
+// export async function loader({ request, params }) {
+//   const id = params.bugId;
+//   return defer({
+//     comments: loadComments(id),
+//   });
+// }

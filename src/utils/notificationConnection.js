@@ -21,7 +21,7 @@ export default async function notificationConnection() {
       );
 
       const { data } = res;
-      console.log(data);
+      // console.log(data); return it 
       return data;
     },
     listenNotifications: () => {
@@ -31,7 +31,7 @@ export default async function notificationConnection() {
 
     stopListeningNotifications: () =>
       notifyConnection.stop().then(() => {
-        console.log('disconnected');
+        // console.log('disconnected'); return it
         notifyConnection.off('ReceiveNotification');
       }),
 

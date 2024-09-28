@@ -35,8 +35,6 @@ export default function BugTableRow({ bug }) {
   };
   const handleEdit=()=>{
     setEdit(bug)
-    console.log(bug)
-    console.log(bug.id)
   }
   const handleBugDeletion = async () => {
     const asyncOperation = async () => {

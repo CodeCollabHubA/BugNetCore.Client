@@ -16,6 +16,7 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
+import { getAllBugsWithFilterPaginationAndSorting } from 'src/services/bugApiService';
 
 import TableNoData from '../table-no-data';
 import BugTableRow from '../bug-table-row';
@@ -28,9 +29,10 @@ import BugModal from '../bug-modal';
 // ----------------------------------------------------------------------
 
 export default function BugPage() {
-  const bugs = useRouteLoaderData('bugs');
-
+  const _bugs = useRouteLoaderData('bugs');
+  const [bugs,setBugs]=useState(_bugs)
   const [page, setPage] = useState(0);
+  console.log(_bugs)
 
   const [order, setOrder] = useState('asc');
 
@@ -50,10 +52,14 @@ export default function BugPage() {
     }
   };
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = async(event, newPage) => {
     // TODO: Complete the code below to fetch the data as the user goes to next page
-    // const numberOfBugsNeeded = (page + 1) * rowsPerPage;
-    
+    const numberOfBugsNeeded = (newPage + 1) * rowsPerPage;
+    const {records:dataOfPage} = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,numberOfBugsNeeded,newPage)
+    console.log(numberOfBugsNeeded)
+    console.log(dataOfPage)
+    console.log(newPage)
+    setBugs(dataOfPage)
     setPage(newPage);
   };
 

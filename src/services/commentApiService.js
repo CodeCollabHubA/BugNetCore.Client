@@ -8,7 +8,7 @@ export const getAllCommentsWithFilterPaginationAndSorting = async (
   filterQuery = null,
   sortBy = null,
   isAscending = null,
-  pageSize = 10,
+  pageSize = 25,
   pageNumber = 1
 ) => {
   
@@ -36,7 +36,6 @@ export const getCommentById = async (id) => {
 };
 
 export const createComment = async (req) => {
-  console.log(req,'deeper')
   const { data } = await http.post(`${commentApi}`, req);
 
   return data;

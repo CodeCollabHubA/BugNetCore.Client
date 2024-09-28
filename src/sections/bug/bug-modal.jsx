@@ -30,7 +30,6 @@ const BugModal = ({ open, handleClose, bug}) => {
     const getproject=async()=>{
       try {
         const data = await getProjectData()
-        console.log(data)
         setProjects(data)
       } catch (error) {
         console.log(error)
@@ -53,19 +52,18 @@ const BugModal = ({ open, handleClose, bug}) => {
     category: Yup.string().required('select a category'),
     customerAssignedSeverity: Yup.string().required('select a severity'),
     projectName: Yup.string().required('select a project name'),
-    screenshot:Yup.mixed()
+    screenshotFile:Yup.mixed()
   });
 
   const handleSubmit = async (values) => {
     console.log('inside')
-    console.log(values)
     const {id} = projects.find(e=>e.name === values.projectName)
     const formData = new FormData();
     formData.description =values.description
     formData.category =values.category
     formData.customerAssignedSeverity =values.customerAssignedSeverity
     formData.status ="Reported"
-    formData.screenshot= values.screenshot
+    formData.screenshotFile= values.screenshotFile
     formData.projectId =id
     
     
@@ -171,13 +169,13 @@ const BugModal = ({ open, handleClose, bug}) => {
                   )}
               </Field>
               {/* <ErrorMessage name="projecName" component="span" className='text-red-600' /> */}
-              <Field name="screenshot" >
+              <Field name="screenshotFile" >
                 {({ field }) => (
                   <TextField
                   {...field}
                   value={undefined}
                   type='file'
-                  onChange={(event) => {setFieldValue('screenshot',event.currentTarget.files[0])                    
+                  onChange={(event) => {setFieldValue('screenshotFile',event.currentTarget.files[0])                    
                   }}
                   fullWidth 
                   margin="normal"

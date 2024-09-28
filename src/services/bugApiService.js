@@ -8,7 +8,7 @@ export const getAllBugsWithFilterPaginationAndSorting = async (
   filterQuery = null,
   sortBy = null,
   isAscending = null,
-  pageSize = 10,
+  pageSize = 5,
   pageNumber = 1
 ) => {
   let url = `${bugApi}?pageSize=${pageSize}&pageNumber=${pageNumber}`;
@@ -45,7 +45,7 @@ export const createBug = async (req) => {
 };
 
 export const updateBug = async (id, req) => {
-  console.log(id,req)
+
   const { data } = await http.put(`${bugApi}/${id}`, req,{headers: {
     'Content-Type': 'multipart/form-data',
   }});

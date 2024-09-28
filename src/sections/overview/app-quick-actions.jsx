@@ -13,7 +13,7 @@ import ConditionalRendering from './app-util';
 
 export default function AppQuickActions({ title, subheader, list, ...other }) {
   const [openModal, setOpenModal] = useState(false);
-  console.log(list)
+
   return (
     <Card  {...other}>
       <CardHeader title={title} subheader={subheader} />
@@ -27,9 +27,9 @@ export default function AppQuickActions({ title, subheader, list, ...other }) {
         }}
         >
         {list.map((site) => (
-          <ConditionalRendering path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
+          <ConditionalRendering key={site.name} path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
           <Paper
-          key={site.name}
+          
           variant="outlined"
           sx={{ py: 2.5, textAlign: 'center',":hover":{boxShadow:3},borderBlockColor:'dark' }}
           >
