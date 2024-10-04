@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form, Field,ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { getProjectData } from 'src/services/projectApiService';
 import { createBug,updateBug } from 'src/services/bugApiService';
@@ -109,7 +109,9 @@ const BugModal = ({ open, handleClose, bug}) => {
                   />
                 )}
               </Field>
-              {/* <ErrorMessage name="description" component="span" className='text-red-600' /> */}
+              <ErrorMessage name="description">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage>
               <Field name="category">
                 {({ field }) => (
                   <Autocomplete
@@ -129,7 +131,9 @@ const BugModal = ({ open, handleClose, bug}) => {
                   />
                 )}
               </Field>
-              {/* <ErrorMessage name="category" component="span" className='text-red-600'/> */}
+              <ErrorMessage name="category">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage> 
               <Field name="customerAssignedSeverity">
                 {({ field }) => (
                   <Autocomplete
@@ -149,7 +153,9 @@ const BugModal = ({ open, handleClose, bug}) => {
                   />
                 )}
               </Field>
-              {/* <ErrorMessage name="customerAssignedSeverity" component="span" className='text-red-600' /> */}
+              <ErrorMessage name="customerAssignedSeverity">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage> 
               <Field name="projectName">
                 {({ field }) => (
                   <Autocomplete
@@ -168,7 +174,9 @@ const BugModal = ({ open, handleClose, bug}) => {
                     />
                   )}
               </Field>
-              {/* <ErrorMessage name="projecName" component="span" className='text-red-600' /> */}
+              <ErrorMessage name="projectName">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage>
               <Field name="screenshotFile" >
                 {({ field }) => (
                   <TextField

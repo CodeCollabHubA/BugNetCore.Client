@@ -13,6 +13,7 @@ import IconButton from '@mui/material/IconButton';
 
 import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
+import UserModal from './user-model';
 
 // ----------------------------------------------------------------------
 
@@ -25,8 +26,10 @@ export default function UserTableRow({
   isVerified,
   status,
   // handleClick,
+  user
 }) {
   const [open, setOpen] = useState(null);
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -36,8 +39,14 @@ export default function UserTableRow({
     setOpen(null);
   };
 
+  const handleEdit=()=>{
+    // setEdit()
+    console.log('clg')
+  }
+
   return (
     <>
+      <UserModal open={openCreateModal} handleClose={() => setOpenCreateModal(false)} user={user} />
       <TableRow hover tabIndex={-1} role="checkbox" >{/* selected={selected} */}
         {/* <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={handleClick} />
@@ -76,11 +85,13 @@ export default function UserTableRow({
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: { width: 140 },
-        }}
+        PaperProps={{sx: "width: 140" }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={()=>{
+          handleCloseMenu()
+          setOpenCreateModal(true)
+          handleEdit()
+        }}>
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
@@ -97,10 +108,9 @@ export default function UserTableRow({
 UserTableRow.propTypes = {
   avatarUrl: PropTypes.any,
   company: PropTypes.any,
-  // handleClick: PropTypes.func,
   isVerified: PropTypes.any,
   name: PropTypes.any,
   role: PropTypes.any,
-  // selected: PropTypes.any,
   status: PropTypes.string,
+  user:PropTypes.object
 };

@@ -25,6 +25,7 @@ export default function BugDetailView() {
   const { bugId } = useParams();
   const { comments } = useRouteLoaderData('bug_details');
   const [comment,setComment] = useState([...comments])
+  const [editing,setEditing] = useState(false)
   const bugs = useRouteLoaderData('bugs');
   const bug = bugs.find((b) => b.id === bugId);
   const developers=['Ahmed','Mohammed']
@@ -60,8 +61,9 @@ export default function BugDetailView() {
     });
   };
 
-  const editPage =()=>{
-    console.log('editing')
+  const editBugDetails =()=>{
+    console.log(role,'role')
+    setEditing(!editing)
   }
   const renderImg = (
     <Box
@@ -113,6 +115,7 @@ export default function BugDetailView() {
     try {
         const data = await updateBug(bugId,{...formData})
         console.log('Developer Added successfully:',data)
+        setEditing(false)
     }catch(ex){
       console.log(ex)
     }
@@ -136,13 +139,13 @@ export default function BugDetailView() {
           >
             <Typography variant="h5">Bug Detail:</Typography>
             <Button
-              onClick={role==='Admin'?editPage:handleLiveSupportRequest}
+              onClick={role==='Admin'?editBugDetails:handleLiveSupportRequest}
               variant="contained"
               size="medium"
               color="error"
-              title={role==='Admin'?'Edit Page':"Request Live Support"} // edit here for  edit or support button in term of user role ##############
+              title={role==='Admin'?'Edit details':"Request Live Support"} // edit here for  edit or support button in term of user role ##############
             >
-              {role==='Admin'?'Edit Page':"Request Live Support"}
+              {role==='Admin'?'Edit details':"Request Live Support"}
             </Button>
           </Stack>
 
@@ -173,7 +176,7 @@ export default function BugDetailView() {
                 <strong>Customer Name: </strong> {bug.customer.username}
               </Typography>
                 
-                {role==='Admin'?
+                {editing?
                 <Formik
                 initialValues={devinitialValues}
                 validationSchema={devValidationSchema}
