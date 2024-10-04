@@ -65,9 +65,9 @@ export default function UserTableHead({
 UserTableHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
-  // rowCount: PropTypes.number,
   headLabel: PropTypes.array,
-  // numSelected: PropTypes.number,
   onRequestSort: PropTypes.func,
+  // rowCount: PropTypes.number,
+  // numSelected: PropTypes.number,
   // onSelectAllClick: PropTypes.func,
 };

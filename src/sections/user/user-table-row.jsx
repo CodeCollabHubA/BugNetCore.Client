@@ -19,12 +19,12 @@ import UserModal from './user-model';
 
 export default function UserTableRow({
   // selected,
-  name,
+  username,
   avatarUrl,
-  company,
+  email,
   role,
   isVerified,
-  status,
+  // status,
   // handleClick,
   user
 }) {
@@ -55,22 +55,24 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={name} src={avatarUrl} />
+            <Avatar alt={username} src={avatarUrl} />
             <Typography variant="subtitle2" noWrap>
-              {name}
+              {username}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company}</TableCell>
+        <TableCell>{email}</TableCell>
 
         <TableCell>{role}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-        <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+        <TableCell align="center">
+        <Label color={ (isVerified === false) || 'success'}>{isVerified ? 'Yes' : 'No'}</Label>
         </TableCell>
+
+        {/* <TableCell>
+          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
+        </TableCell> */}
 
         <TableCell align="right">
           <IconButton onClick={handleOpenMenu}>
@@ -107,10 +109,10 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   avatarUrl: PropTypes.any,
-  company: PropTypes.any,
+  email: PropTypes.string,
   isVerified: PropTypes.any,
-  name: PropTypes.any,
-  role: PropTypes.any,
-  status: PropTypes.string,
+  username: PropTypes.string,
+  role: PropTypes.string,
+  // status: PropTypes.string,
   user:PropTypes.object
 };

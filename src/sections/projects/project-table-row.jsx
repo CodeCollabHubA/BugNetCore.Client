@@ -88,13 +88,11 @@ console.log(project)
               underline="hover"
               variant="subtitle2"
             >
-              {project.id}
+              {project.name}
             </Link>{' '}
           </Typography>
         </TableCell>
 
-
-        <TableCell>{project.name}</TableCell>
 
         <TableCell>{project.description}</TableCell>
 
