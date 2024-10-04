@@ -86,9 +86,12 @@ console.log(dataFiltered)
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  { id: 'bugId', label: 'Bug Id'},
-                  { id: 'lastModified', label: 'Last Modified'},
+                  { id: 'requestId', label: 'Chat Room'},
+                  { id: 'bugTitle', label: 'Bug Title'},
+                  { id: 'dev', label: 'Developer Name'},
+                  { id: 'customer', label: 'Customer Name'},
                   { id: 'status', label: 'Status' },
+                  { id: 'lastModified', label: 'Last Modified'},
                   { id: '' },
                 ]}
               />

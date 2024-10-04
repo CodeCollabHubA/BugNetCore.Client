@@ -67,7 +67,7 @@ export default function UserTableRow({
         <TableCell>{role}</TableCell>
 
         <TableCell align="center">
-        <Label color={ (isVerified === false) || 'success'}>{isVerified ? 'Yes' : 'No'}</Label>
+        <Label color={(isVerified === false) || 'success'}>{isVerified ? 'Yes' : 'No'}</Label>
         </TableCell>
 
         {/* <TableCell>

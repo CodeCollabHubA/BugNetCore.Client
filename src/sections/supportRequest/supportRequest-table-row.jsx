@@ -73,20 +73,23 @@ export default function SupportRequestTableRow({ SR ,user}) {
       <TableRow hover>
         <TableCell>
           <Typography variant="subtitle2">
-            {' '}
             <Link
               component={ReactRouterLink}
               to={`chat/:${SR.id}/:${user.id}`}
-              color="inherit"
+              color="blue"
               underline="hover"
               variant="subtitle2"
+
             >
-              {SR.id}
-            </Link>{' '}
+              enter chat room
+            </Link>
           </Typography>
         </TableCell>
 
         <TableCell>{SR.lastModified}</TableCell>
+        {/* <TableCell>{SR.customer}</TableCell> */}
+        {/* <TableCell>{SR.dev}</TableCell> */}
+        {/* <TableCell>{SR.bugTitle}</TableCell> */}
         
         <TableCell>
           <Label color={statusColor}>{SR.status}</Label>
@@ -106,19 +109,28 @@ export default function SupportRequestTableRow({ SR ,user}) {
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: { width: 140 },
-        }}
+        PaperProps={{sx: { width: 140 }}}
       >
-        {/* <MenuItem onClick={()=>handleCloseMenu()}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit
-        </MenuItem> */}
+        <MenuItem onClick={()=>handleCloseMenu()}>
+          <Iconify icon="duo-icons:approved" sx={{ mr: 2 }} />
+          Approve
+        </MenuItem>
+        {/* , , ,  */}
+        <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          Reject
+        </MenuItem>
 
         <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-          Delete
+          Cancel
         </MenuItem>
+
+        <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          Close
+        </MenuItem>
+
       </Popover>
     </>
   );

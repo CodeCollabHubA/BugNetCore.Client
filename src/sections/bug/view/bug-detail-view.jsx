@@ -33,9 +33,11 @@ export default function BugDetailView() {
   const initialValues ={
     commentText:'',
   }
+  const status = [ "Reported", "InProgress","Resolved", "Testing" ]
   const devinitialValues ={
     developerName:'',
-    adminAssignedPriority:''
+    adminAssignedPriority:'',
+    status:bug.status ,
   }
   const validationSchema = Yup.object({
     commentText: Yup.string().required(),
@@ -43,6 +45,7 @@ export default function BugDetailView() {
   const devValidationSchema = Yup.object({
     developerName: Yup.string(),
     adminAssignedPriority: Yup.string(),
+    status: Yup.string(),
   });
  
   const sendSupportRequest = () =>
@@ -108,13 +111,13 @@ export default function BugDetailView() {
     formData.adminAssignedPriority= values.adminAssignedPriority
     formData.bugId =bug.id
     formData.description= bug.description
-    formData.status= bug.status
+    formData.status= values.status||bug.status
     formData.ProjectId= bug.project.id
     formData.category= bug.category
     
     try {
         const data = await updateBug(bugId,{...formData})
-        console.log('Developer Added successfully:',data)
+        console.log('Edititng finish successfully:',data)
         setEditing(false)
     }catch(ex){
       console.log(ex)
@@ -167,9 +170,6 @@ export default function BugDetailView() {
                 <strong>Customer Assigned Severity:</strong> {bug.customerAssignedSeverity}
               </Typography>
               <Typography variant="body2">
-                <strong>Status: </strong> {bug.status}
-              </Typography>
-              <Typography variant="body2">
                 <strong>Project Name: </strong> {bug.project.name}
               </Typography>
               <Typography variant="body2">
@@ -184,6 +184,24 @@ export default function BugDetailView() {
               >
                 {({ setFieldValue }) => (
                   <Form>
+                    <Field name="status">
+                      {({ field }) => (
+                        <Autocomplete
+                          {...field}
+                          options={status}
+                          onChange={ (event,value)=> {setFieldValue('status', value)}}
+                          renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="status"
+                            variant="outlined"
+                            margin='dense'
+                            size="small"
+                            sx={{width:'60%'}}
+                            />
+                          )}/>
+                        )}
+                    </Field>
                     <Field name="adminAssignedPriority">
                       {({ field }) => (
                         <Autocomplete
@@ -220,6 +238,7 @@ export default function BugDetailView() {
                           )}/>
                         )}
                     </Field>
+
                     
                     <Button type="submit" variant="contained" sx={{mt:'.5rem'}} color="primary">
                       Save
@@ -229,9 +248,14 @@ export default function BugDetailView() {
                 </Formik>
                 :<>
                 <Typography variant="body2">
-                <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
+                  <strong>Status: </strong> {bug.status}
                 </Typography>
-                <Typography variant="body2"> <strong>Developer Name: </strong> {bug.dev} </Typography>
+                <Typography variant="body2">
+                  <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
+                </Typography>
+                <Typography variant="body2">
+                    <strong>Developer Name: </strong> {bug.dev} 
+                </Typography>
                 </>
                 }
               
