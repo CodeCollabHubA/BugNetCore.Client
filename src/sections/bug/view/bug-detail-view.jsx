@@ -103,7 +103,7 @@ export default function BugDetailView() {
   const handleSubmitComment = async (values, { resetForm }) => {
     const formData = new FormData();
     formData.commentText = values.commentText;
-    formData.senderId = bug.customer.id;
+    formData.senderId = JSON.parse(localStorage.user).id;
     formData.bugId = bugId;
 
     try {
