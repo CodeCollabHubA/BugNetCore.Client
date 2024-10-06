@@ -30,7 +30,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   setTimeout(() => {
     setUser(JSON.parse(localStorage.getItem('user')));
-  }, 100);
+  }, 300);
 
   useEffect(() => {
     if (openNav) {

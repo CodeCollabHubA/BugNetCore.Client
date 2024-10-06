@@ -25,6 +25,11 @@ import { login, storeTokenInLocalStorage, getAuthToken, signUp } from 'src/servi
 import apiEndPoints from 'src/services/apiEndPoints';
 // ----------------------------------------------------------------------
 
+const demoAccounts = {
+  admin: { email: 'admin@example.com', password: 'Password123#' },
+  dev: { email: 'john@example.com', password: 'Password123#' },
+  customer: { email: 'customer1@example.com', password: 'Password123#' },
+};
 const { getGitHubOAuthEndpoint } = apiEndPoints;
 export default function AuthView({ isSignup }) {
   const gitHubOAuthEndpoint = getGitHubOAuthEndpoint(window.location.href);
@@ -44,7 +49,7 @@ export default function AuthView({ isSignup }) {
       if (token) {
         router.push('/');
       }
-      
+
       // Get all cookies
       const cookies = document.cookie.split('; ');
 
@@ -76,6 +81,55 @@ export default function AuthView({ isSignup }) {
       setValidationErrors(res.errors);
     }
   };
+
+  const handleDemoAccounts = (eml, pass) => {
+    setEmail(eml);
+    setPassword(pass);
+  };
+
+  const renderDemoSection = (
+    <>
+      <Divider sx={{ my: 3 }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          OR Demo
+        </Typography>
+      </Divider>
+      <Stack direction="row" spacing={2}>
+        <Button
+          fullWidth
+          size="large"
+          color="inherit"
+          variant="outlined"
+          sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+          onClick={() => handleDemoAccounts(demoAccounts.admin.email, demoAccounts.admin.password)}
+        >
+          Admin
+        </Button>
+        <Button
+          fullWidth
+          size="large"
+          color="inherit"
+          variant="outlined"
+          sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+          onClick={() => handleDemoAccounts(demoAccounts.dev.email, demoAccounts.dev.password)}
+        >
+          Developer
+        </Button>
+        <Button
+          fullWidth
+          size="large"
+          color="inherit"
+          variant="outlined"
+          sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+          onClick={() =>
+            handleDemoAccounts(demoAccounts.customer.email, demoAccounts.customer.password)
+          }
+        >
+          Customer
+        </Button>
+      </Stack>
+    </>
+  );
 
   const renderForm = (
     <>
@@ -224,6 +278,7 @@ export default function AuthView({ isSignup }) {
           </Divider>
 
           {renderForm}
+          {!isSignup && renderDemoSection}
           {Object.keys(validationErrors).length > 0 && (
             <Stack
               direction="column"

@@ -37,7 +37,7 @@ export default function AccountPopover() {
 
   setTimeout(() => {
     setUser(JSON.parse(localStorage.getItem('user')));
-  }, 100);
+  }, 300);
   
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
