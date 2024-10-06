@@ -11,17 +11,15 @@ import SupportRequestTableToolbar from '../supportRequest-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import SupportRequestTableHead from '../supportRequest-table-head';
 
-
 import SupportRequestTableRow from '../supportRequest-table-row';
 import TableEmptyRows from '../table-empty-rows';
 import TableNoData from '../table-no-data';
-
 
 // ----------------------------------------------------------------------
 
 export default function SupportRequestView() {
   const _supportRequest = useRouteLoaderData('supportRequest');
-  const [supportRequests,setSupportRequests]=useState(_supportRequest)
+  const [supportRequests, setSupportRequests] = useState(_supportRequest);
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -32,7 +30,7 @@ export default function SupportRequestView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const currentUser = JSON.parse(localStorage.user)
+  const currentUser = JSON.parse(localStorage.user);
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
@@ -41,13 +39,20 @@ export default function SupportRequestView() {
     }
   };
 
-  const handleChangePage = async(event, newPage) => {
+  const handleChangePage = async (event, newPage) => {
     const numberOfSupportRequestsNeeded = (newPage + 1) * rowsPerPage;
-    const {records:dataOfPage} = await getAllSupportRequestsWithFilterPaginationAndSorting(null,null,null,null,numberOfSupportRequestsNeeded,newPage)
-    console.log(numberOfSupportRequestsNeeded)
-    console.log(dataOfPage)
-    console.log(newPage)
-    setSupportRequests(dataOfPage)
+    const { records: dataOfPage } = await getAllSupportRequestsWithFilterPaginationAndSorting(
+      null,
+      null,
+      null,
+      null,
+      numberOfSupportRequestsNeeded,
+      newPage
+    );
+    console.log(numberOfSupportRequestsNeeded);
+    console.log(dataOfPage);
+    console.log(newPage);
+    setSupportRequests(dataOfPage);
     setPage(newPage);
   };
 
@@ -63,14 +68,14 @@ export default function SupportRequestView() {
   const dataFiltered = applyFilter({
     inputData: supportRequests,
     comparator: getComparator(order, orderBy),
-    filterFunction: (supportRequest) => supportRequest.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+    filterFunction: (supportRequest) =>
+      supportRequest.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
   });
-console.log(dataFiltered)
+  console.log(dataFiltered);
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
     <Container>
-
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Supoort Requests</Typography>
       </Stack>
@@ -86,10 +91,10 @@ console.log(dataFiltered)
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  { id: 'requestId', label: 'Chat Room'},
-                  { id: 'bugTitle', label: 'Bug Title'},
-                  { id: 'dev', label: 'Developer Name'},
-                  { id: 'customer', label: 'Customer Name'},
+                  { id: 'requestId', label: 'Chat Room' },
+                  { id: 'bugTitle', label: 'Bug Title' },
+                  { id: 'dev', label: 'Developer Name' },
+                  { id: 'customer', label: 'Customer Name' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}
@@ -98,10 +103,13 @@ console.log(dataFiltered)
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <SupportRequestTableRow key={row.id} SR={row} user={currentUser}/>
+                    <SupportRequestTableRow key={row.id} SR={row} user={currentUser} />
                   ))}
 
-                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, supportRequests.length)} />
+                <TableEmptyRows
+                  height={77}
+                  emptyRows={emptyRows(page, rowsPerPage, supportRequests.length)}
+                />
 
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>
