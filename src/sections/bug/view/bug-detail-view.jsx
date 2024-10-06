@@ -13,7 +13,7 @@ import {
   createComment,
   getAllCommentsWithFilterPaginationAndSorting,
 } from 'src/services/commentApiService';
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useRef, useEffect } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { updateBug } from 'src/services/bugApiService';
@@ -25,6 +25,7 @@ import { updateBug } from 'src/services/bugApiService';
 export default function BugDetailView() {
   const { role } = localStorage;
   const severities = ['Urgent', 'High', 'Medium', 'Low'];
+  const commentsContainerRef = useRef(null);
   const { bugId } = useParams();
   const { comments: oldComments } = useRouteLoaderData('bug_details');
   const [comments, setComment] = useState([...oldComments]);
@@ -86,6 +87,18 @@ export default function BugDetailView() {
       }}
     />
   );
+
+  // Scrolling behaviour for when new comments are added and in the first render
+  const scrollToBottom = () => {
+    commentsContainerRef.current?.scrollTo({
+      top: commentsContainerRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [comments]);
 
   const handleSubmitComment = async (values, { resetForm }) => {
     const formData = new FormData();
@@ -285,7 +298,7 @@ export default function BugDetailView() {
 
           <Card>
             <Stack spacing={2} sx={{ p: 3 }}>
-              <Box sx={{ maxHeight: '400px', overflowY: 'auto' }}>
+              <Box sx={{ maxHeight: '400px', overflowY: 'auto' }} ref={commentsContainerRef}>
                 <Suspense
                   fallback={
                     <Box
@@ -313,6 +326,7 @@ export default function BugDetailView() {
                     ))}
                   </Await>
                 </Suspense>
+                {/* <div ref={commentsContainerRef} /> */}
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                 <Formik
