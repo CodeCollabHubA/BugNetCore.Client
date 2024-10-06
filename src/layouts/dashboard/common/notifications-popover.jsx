@@ -25,6 +25,8 @@ import { fToNow } from 'src/utils/format-time';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import toast from 'react-hot-toast';
+import { RouterLink } from 'src/routes/components';
+import { readNotifcation } from 'src/services/notificationApiService';
 
 // ----------------------------------------------------------------------
 
@@ -89,8 +91,8 @@ export default function NotificationsPopover() {
       try {
         const connection = await notificationConnection();
         const ntfs = await connection.getAllNotifications();
-        // console.log(ntfs); return it
         connection.listenNotifications();
+        console.log(ntfs);
         setNotifications(
           ntfs.map((ntf) => ({
             id: ntf.notificationId,
@@ -100,6 +102,7 @@ export default function NotificationsPopover() {
             type: ntf.type,
             createdAt: new Date(ntf.createdAt),
             isUnRead: !ntf.isRead,
+            additionalInfo: ntf.additionalInfo,
           }))
         );
         connection.onNotification((n) => {
@@ -248,10 +251,12 @@ NotificationItem.propTypes = {
 };
 
 function NotificationItem({ notification }) {
-  const { avatar, title } = renderContent(notification);
+  const { avatar, title, navigationUrl } = renderContent(notification);
 
   return (
     <ListItemButton
+      component={RouterLink}
+      href={navigationUrl}
       sx={{
         py: 1.5,
         px: 2.5,
@@ -259,6 +264,16 @@ function NotificationItem({ notification }) {
         ...(notification.isUnRead && {
           bgcolor: 'action.selected',
         }),
+      }}
+      onClick={async () => {
+        if (notification.isUnRead) {
+          try {
+            await readNotifcation(notification.id);
+            notification.isUnRead = false;
+          } catch (err) {
+            console.log(err);
+          }
+        }
       }}
     >
       <ListItemAvatar>
@@ -298,31 +313,45 @@ function renderContent(notification) {
   );
 
   if (notification.type === 'BugCreation' || notification.type === 'BugAssignment') {
+    const navigationUrl = `bug/${notification.additionalInfo?.BugId}`;
     return {
       avatar: <img alt={notification.title} src="/assets/icons/ic_notification_package.svg" />,
       title,
+      navigationUrl,
     };
   }
   if (notification.type === 'SupportRequest') {
+    const navigationUrl = `supportRequest`;
+
     return {
       avatar: <img alt={notification.title} src="/assets/icons/ic_notification_shipping.svg" />,
       title,
+      navigationUrl,
     };
   }
   if (notification.type === 'ChatInvitation') {
+    const navigationUrl = `supportRequest/chat/${
+      notification.additionalInfo?.RequestId
+    }/${JSON.parse(localStorage.getItem('user'))}`;
+
     return {
       avatar: <img alt={notification.title} src="/assets/icons/ic_notification_mail.svg" />,
       title,
+      navigationUrl,
     };
   }
   if (notification.type === 'Comment') {
+    const navigationUrl = `bug/${notification.additionalInfo?.BugId}`;
+
     return {
       avatar: <img alt={notification.title} src="/assets/icons/ic_notification_chat.svg" />,
       title,
+      navigationUrl,
     };
   }
   return {
     avatar: notification.avatar ? <img alt={notification.title} src={notification.avatar} /> : null,
     title,
+    navigationUrl: '',
   };
 }
