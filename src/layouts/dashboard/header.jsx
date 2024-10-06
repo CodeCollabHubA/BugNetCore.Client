@@ -25,7 +25,7 @@ export default function Header({ onOpenNav }) {
   const theme = useTheme();
 
   const lgUp = useResponsive('up', 'lg');
-  
+
   const renderContent = (
     <>
       {!lgUp && (
@@ -64,11 +64,9 @@ export default function Header({ onOpenNav }) {
       }}
     >
       <Toolbar
-        
         sx={{
           height: 1,
           px: { lg: 5 },
-          
         }}
       >
         {renderContent}
