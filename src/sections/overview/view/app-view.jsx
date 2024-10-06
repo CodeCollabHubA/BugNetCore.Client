@@ -7,10 +7,12 @@ import Typography from '@mui/material/Typography';
 
 import Iconify from 'src/components/iconify';
 
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
+import BugModal from 'src/sections/bug/bug-modal';
 // import AppTasks from '../app-tasks';
 // import AppNewsUpdate from '../app-news-update';
+import { useRouter } from 'src/routes/hooks';
 import AppQuickActions from '../app-quick-actions';
 // import AppOrderTimeline from '../app-order-timeline';
 import AppCurrentVisits from '../app-current-visits';
@@ -23,6 +25,9 @@ import AppWidgetSummary from '../app-widget-summary';
 
 export default function AppView() {
   const { numberOfProjects, numberOfCustomers, numberOfBugs } = useRouteLoaderData('dashboard');
+  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+
   return (
     <Container maxWidth="xl">
       <Typography variant="h4" sx={{ mb: 5 }}>
@@ -67,7 +72,6 @@ export default function AppView() {
                   justifyContent: 'center',
                   alignItems: 'center',
                   height: '100vh',
-                  
                 }}
               >
                 <CircularProgress />
@@ -162,22 +166,25 @@ export default function AppView() {
           />
         </Grid> */}
         <Grid xs={12} md={6} lg={8}>
+          <BugModal open={openModal} handleClose={() => setOpenModal(false)} bug={null} />
           <AppQuickActions
             title="Quick actions"
-            
             list={[
               {
-                path:'ReportCreate',
+                handleClick: () => setOpenModal(true),
+                // path: 'ReportCreate',
                 name: 'Report a Bug',
                 icon: <Iconify icon="ant-design:bug-filled" color="#DF3E30" width={32} />,
               },
               {
-                path:'liveSuport',
+                handleClick: () => router.push('/bug'),
+                // path: 'liveSuport',
                 name: 'Request Live Support',
                 icon: <Iconify icon="fluent:person-support-24-filled" color="#0FFF50" width={32} />,
               },
               {
-                path:'bug',
+                handleClick: () => router.push('/bug'),
+                // path: 'bug',
                 name: 'View Bugs',
                 icon: <Iconify icon="streamline:bug-virus-browser" color="#1877F2" width={32} />,
               },

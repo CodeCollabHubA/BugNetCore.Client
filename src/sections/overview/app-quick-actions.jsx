@@ -6,16 +6,16 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CardHeader from '@mui/material/CardHeader';
 
-import { useState } from 'react';
-import ConditionalRendering from './app-util';
+// import { useState } from 'react';
+// import ConditionalRendering from './app-util';
 
 // ----------------------------------------------------------------------
 
 export default function AppQuickActions({ title, subheader, list, ...other }) {
-  const [openModal, setOpenModal] = useState(false);
+  // const [openModal, setOpenModal] = useState(false);
 
   return (
-    <Card  {...other}>
+    <Card {...other}>
       <CardHeader title={title} subheader={subheader} />
       <Box
         sx={{
@@ -23,26 +23,29 @@ export default function AppQuickActions({ title, subheader, list, ...other }) {
           gap: 2,
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
-          
         }}
-        >
+      >
         {list.map((site) => (
-          <ConditionalRendering key={site.name} path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
+          // <ConditionalRendering key={site.name} path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
           <Paper
-          
-          variant="outlined"
-          sx={{ py: 2.5, textAlign: 'center',":hover":{boxShadow:3},borderBlockColor:'dark' }}
+            variant="outlined"
+            sx={{
+              py: 2.5,
+              textAlign: 'center',
+              ':hover': { boxShadow: 3 },
+              borderBlockColor: 'dark',
+            }}
           >
-            <Box onClick={site.path==='ReportCreate'?() => setOpenModal(true):null} sx={{ mb: 0.5 }}>{site.icon}</Box>
-
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {site.name}
-            </Typography>
+            <Box onClick={site.handleClick} sx={{ mb: 0.5, cursor: 'pointer' }}>
+              {site.icon}
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {site.name}
+              </Typography>
+            </Box>
           </Paper>
-        </ConditionalRendering>
+          // </ConditionalRendering>
         ))}
       </Box>
-
     </Card>
   );
 }
