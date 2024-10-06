@@ -9,10 +9,13 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Await, defer, useParams, useRouteLoaderData } from 'react-router-dom';
-import {  createComment,getAllCommentsWithFilterPaginationAndSorting } from 'src/services/commentApiService';
+import {
+  createComment,
+  getAllCommentsWithFilterPaginationAndSorting,
+} from 'src/services/commentApiService';
 import { Suspense, useState } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
-import { Formik,Form,Field } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import { updateBug } from 'src/services/bugApiService';
 
 // import { bugs } from 'src/_mock/bug';
@@ -20,25 +23,25 @@ import { updateBug } from 'src/services/bugApiService';
 // ----------------------------------------------------------------------
 
 export default function BugDetailView() {
-  const {role} = localStorage
+  const { role } = localStorage;
   const severities = ['Urgent', 'High', 'Medium', 'Low'];
   const { bugId } = useParams();
-  const { comments } = useRouteLoaderData('bug_details');
-  const [comment,setComment] = useState([...comments])
-  const [editing,setEditing] = useState(false)
+  const { comments: oldComments } = useRouteLoaderData('bug_details');
+  const [comments, setComment] = useState([...oldComments]);
+  const [editing, setEditing] = useState(false);
   const bugs = useRouteLoaderData('bugs');
   const bug = bugs.find((b) => b.id === bugId);
-  const developers=['Ahmed','Mohammed']
+  const developers = ['Ahmed', 'Mohammed'];
 
-  const initialValues ={
-    commentText:'',
-  }
-  const status = [ "Reported", "InProgress","Resolved", "Testing" ]
-  const devinitialValues ={
-    developerName:'',
-    adminAssignedPriority:'',
-    status:bug.status ,
-  }
+  const initialValues = {
+    commentText: '',
+  };
+  const status = ['Reported', 'InProgress', 'Resolved', 'Testing'];
+  const devinitialValues = {
+    developerName: '',
+    adminAssignedPriority: '',
+    status: bug.status,
+  };
   const validationSchema = Yup.object({
     commentText: Yup.string().required(),
   });
@@ -47,14 +50,14 @@ export default function BugDetailView() {
     adminAssignedPriority: Yup.string(),
     status: Yup.string(),
   });
- 
+
   const sendSupportRequest = () =>
     new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve();
       }, 2000);
     });
-    // 
+  //
   const handleLiveSupportRequest = () => {
     toast.promise(sendSupportRequest(), {
       loading: 'Sending a Live Support Request...',
@@ -64,10 +67,10 @@ export default function BugDetailView() {
     });
   };
 
-  const editBugDetails =()=>{
-    console.log(role,'role')
-    setEditing(!editing)
-  }
+  const editBugDetails = () => {
+    console.log(role, 'role');
+    setEditing(!editing);
+  };
   const renderImg = (
     <Box
       component="img"
@@ -78,53 +81,48 @@ export default function BugDetailView() {
         height: '20rem',
 
         position: 'relative',
-        margin:'1rem ',
-        borderRadius:'1rem'
+        margin: '1rem ',
+        borderRadius: '1rem',
       }}
     />
   );
 
-
-  const handleSubmitComment = async(values,{resetForm})=>{
-
+  const handleSubmitComment = async (values, { resetForm }) => {
     const formData = new FormData();
-    formData.commentText =values.commentText
-    formData.senderId = bug.customer.id
-    formData.bugId = bugId
- 
+    formData.commentText = values.commentText;
+    formData.senderId = bug.customer.id;
+    formData.bugId = bugId;
 
     try {
-      resetForm()
-      const res = await createComment({...formData})
-      const newComment = [...comments]
-      newComment.push({...res})
-      setComment(newComment)
-      console.log('submitted comment is success',res)
+      resetForm();
+      const res = await createComment({ ...formData });
+      const newComment = [...comments];
+      newComment.push({ ...res });
+      setComment(newComment);
+      console.log('submitted comment is success', res);
     } catch (error) {
-      console.error(error)
-      
+      console.error(error);
     }
-  }
-  const handleSave =async(values)=>{
-    console.log('insideSaving')
+  };
+  const handleSave = async (values) => {
+    console.log('insideSaving');
     const formData = new FormData();
-    formData.dev =values.developerName
-    formData.adminAssignedPriority= values.adminAssignedPriority
-    formData.bugId =bug.id
-    formData.description= bug.description
-    formData.status= values.status||bug.status
-    formData.ProjectId= bug.project.id
-    formData.category= bug.category
-    
-    try {
-        const data = await updateBug(bugId,{...formData})
-        console.log('Edititng finish successfully:',data)
-        setEditing(false)
-    }catch(ex){
-      console.log(ex)
-    }
+    formData.dev = values.developerName;
+    formData.adminAssignedPriority = values.adminAssignedPriority;
+    formData.bugId = bug.id;
+    formData.description = bug.description;
+    formData.status = values.status || bug.status;
+    formData.ProjectId = bug.project.id;
+    formData.category = bug.category;
 
-  }
+    try {
+      const data = await updateBug(bugId, { ...formData });
+      console.log('Edititng finish successfully:', data);
+      setEditing(false);
+    } catch (ex) {
+      console.log(ex);
+    }
+  };
   return (
     <Container>
       <Toaster />
@@ -143,18 +141,20 @@ export default function BugDetailView() {
           >
             <Typography variant="h5">Bug Detail:</Typography>
             <Button
-              onClick={role==='Admin'?editBugDetails:handleLiveSupportRequest}
+              onClick={role === 'Admin' ? editBugDetails : handleLiveSupportRequest}
               variant="contained"
               size="medium"
               color="error"
-              title={role==='Admin'?'Edit details':"Request Live Support"} // edit here for  edit or support button in term of user role ##############
+              title={role === 'Admin' ? 'Edit details' : 'Request Live Support'} // edit here for  edit or support button in term of user role ##############
             >
-              {role==='Admin'?'Edit details':"Request Live Support"}
+              {role === 'Admin' ? 'Edit details' : 'Request Live Support'}
             </Button>
           </Stack>
 
           <Card>
-            <Box sx={{display:'flex',justifyContent:'center',  position: 'relative' }}>{renderImg}</Box>
+            <Box sx={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+              {renderImg}
+            </Box>
 
             <Stack spacing={2} sx={{ p: 3 }}>
               <Typography variant="subtitle2">
@@ -176,90 +176,103 @@ export default function BugDetailView() {
               <Typography variant="body2">
                 <strong>Customer Name: </strong> {bug.customer.username}
               </Typography>
-                
-                {editing?
-                <Formik
-                initialValues={devinitialValues}
-                validationSchema={devValidationSchema}
-                onSubmit={handleSave}
-              >
-                {({ setFieldValue }) => (
-                  <Form>
-                    <Field name="status">
-                      {({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={status}
-                          onChange={ (event,value)=> {setFieldValue('status', value)}}
-                          renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="status"
-                            variant="outlined"
-                            margin='dense'
-                            size="small"
-                            sx={{width:'60%'}}
-                            />
-                          )}/>
-                        )}
-                    </Field>
-                    <Field name="adminAssignedPriority">
-                      {({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={severities}
-                          onChange={ (event,value)=> {setFieldValue('adminAssignedPriority', value)}}
-                          renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="AssignedPriority"
-                            variant="outlined"
-                            margin='dense'
-                            size="small"
-                            sx={{width:'60%'}}
-                            />
-                          )}/>
-                        )}
-                    </Field>
-                    <Field name="developerName">
-                      {({ field }) => (
-                        <Autocomplete
-                          {...field}
-                          options={developers}
-                          onChange={ (event,value)=> {setFieldValue('developerName', value)}}
-                          renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Developer Name"
-                            variant="outlined"
-                            margin='dense'
-                            size="small"
-                            sx={{width:'60%'}}
-                            />
-                          )}/>
-                        )}
-                    </Field>
 
-                    
-                    <Button type="submit" variant="contained" sx={{mt:'.5rem'}} color="primary">
-                      Save
-                    </Button>
-                  </Form>
+              {editing ? (
+                <Formik
+                  initialValues={devinitialValues}
+                  validationSchema={devValidationSchema}
+                  onSubmit={handleSave}
+                >
+                  {({ setFieldValue }) => (
+                    <Form>
+                      <Field name="status">
+                        {({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            options={status}
+                            onChange={(event, value) => {
+                              setFieldValue('status', value);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="status"
+                                variant="outlined"
+                                margin="dense"
+                                size="small"
+                                sx={{ width: '60%' }}
+                              />
+                            )}
+                          />
+                        )}
+                      </Field>
+                      <Field name="adminAssignedPriority">
+                        {({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            options={severities}
+                            onChange={(event, value) => {
+                              setFieldValue('adminAssignedPriority', value);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="AssignedPriority"
+                                variant="outlined"
+                                margin="dense"
+                                size="small"
+                                sx={{ width: '60%' }}
+                              />
+                            )}
+                          />
+                        )}
+                      </Field>
+                      <Field name="developerName">
+                        {({ field }) => (
+                          <Autocomplete
+                            {...field}
+                            options={developers}
+                            onChange={(event, value) => {
+                              setFieldValue('developerName', value);
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Developer Name"
+                                variant="outlined"
+                                margin="dense"
+                                size="small"
+                                sx={{ width: '60%' }}
+                              />
+                            )}
+                          />
+                        )}
+                      </Field>
+
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: '.5rem' }}
+                        color="primary"
+                      >
+                        Save
+                      </Button>
+                    </Form>
                   )}
                 </Formik>
-                :<>
-                <Typography variant="body2">
-                  <strong>Status: </strong> {bug.status}
-                </Typography>
-                <Typography variant="body2">
-                  <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
-                </Typography>
-                <Typography variant="body2">
-                    <strong>Developer Name: </strong> {bug.dev.username} 
-                </Typography>
+              ) : (
+                <>
+                  <Typography variant="body2">
+                    <strong>Status: </strong> {bug.status}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
+                  </Typography>
+                  <Typography variant="body2">
+                    <strong>Developer Name: </strong> {bug.dev.username}
+                  </Typography>
                 </>
-                }
-              
+              )}
             </Stack>
           </Card>
         </Grid>
@@ -281,7 +294,6 @@ export default function BugDetailView() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         height: '100vh',
-                        
                       }}
                     >
                       <CircularProgress />
@@ -289,64 +301,57 @@ export default function BugDetailView() {
                   }
                 >
                   <Await resolve={comments}>
-                    {
-                      comment.map((item) => (
-                        <Box key={item.id} sx={{ mb: 2 }}>
-                          <Typography variant="subtitle2">
-                            <strong>
-                              {item.sender.username} ({item.sender.userRole}):
-                            </strong>
-                          </Typography>
-                          <Typography variant="body2">{item.commentText}</Typography>
-                        </Box>
-                      ))
-                    }
+                    {comments.map((item) => (
+                      <Box key={item.id} sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2">
+                          <strong>
+                            {item.sender.username} ({item.sender.userRole}):
+                          </strong>
+                        </Typography>
+                        <Typography variant="body2">{item.commentText}</Typography>
+                      </Box>
+                    ))}
                   </Await>
                 </Suspense>
               </Box>
-              <Box sx={{ display: 'flex', justifyContent:'center', mt: 2 }}>
-              <Formik
-                initialValues={initialValues}
-                validationSchema={validationSchema}
-                onSubmit={handleSubmitComment}
-              >
-                
-              <Form>
-                <Field name="commentText">
-                {({ field }) => (
-                  <TextField
-                    {...field}
-                    onT
-                    label="Your Comment"
-                    variant="outlined"
-                    size="small"
-                    sx={{ flexGrow: 1, mr: 2 }}
-                  />
-                )}
-              </Field>
-                  <Button type='submit' variant="contained" color="primary">
-                    Send
-                  </Button>
-                </Form>
-
-              </Formik>
-                
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <Formik
+                  initialValues={initialValues}
+                  validationSchema={validationSchema}
+                  onSubmit={handleSubmitComment}
+                >
+                  <Form>
+                    <Field name="commentText">
+                      {({ field }) => (
+                        <TextField
+                          {...field}
+                          onT
+                          label="Your Comment"
+                          variant="outlined"
+                          size="small"
+                          sx={{ flexGrow: 1, mr: 2 }}
+                        />
+                      )}
+                    </Field>
+                    <Button type="submit" variant="contained" color="primary">
+                      Send
+                    </Button>
+                  </Form>
+                </Formik>
               </Box>
             </Stack>
           </Card>
         </Grid>
-              {/* end of comment section ################### */}
+        {/* end of comment section ################### */}
       </Grid>
     </Container>
   );
 }
 
-
-
 export async function loader({ request, params }) {
   const id = params.bugId;
-  const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id)
-  return defer({comments: records});
+  const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
+  return defer({ comments: records });
 }
 // async function loadComments(id) {
 //   const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
