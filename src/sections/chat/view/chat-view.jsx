@@ -20,11 +20,15 @@ import styled from '@mui/material/styles/styled';
 import chatConnection from 'src/utils/chatConnection';
 import Iconify from 'src/components/iconify';
 import { fTimeOnly } from 'src/utils/format-time';
+import { getsupportRequestById } from 'src/services/supportRequestApiService';
 
 export default function ChatView({ requestId, userId }) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState(null);
-
+  const [participants, setParticipants] = useState([
+    { id: 1, username: '', picture: '', userRole: 'Developer' },
+    { id: 2, username: '', picture: '', userRole: 'Customer' },
+  ]);
   const connectionRef = useRef(null);
   const messagesEndRef = useRef(null);
   const shouldScroll = useRef(false);
@@ -42,20 +46,24 @@ export default function ChatView({ requestId, userId }) {
   );
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollTo({
+      top: messagesEndRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
   };
 
   useEffect(() => {
-    if (shouldScroll.current) {
-      scrollToBottom();
-      shouldScroll.current = false;
-    }
+    scrollToBottom();
   }, [messages]);
 
   useEffect(() => {
     console.log(requestId, userId);
     const fetchData = async () => {
       try {
+        const supportRequest = await getsupportRequestById(requestId);
+        const particips = [supportRequest.supportDev, supportRequest.customer];
+        console.log(particips);
+        setParticipants(particips);
         const connection = await chatConnection();
         const msgs = await connection.join(requestId, userId);
         setMessages(msgs);
@@ -63,7 +71,8 @@ export default function ChatView({ requestId, userId }) {
           setMessages((prevMessages) => [...prevMessages, msg]);
           if (
             messagesEndRef.current &&
-            messagesEndRef.current.getBoundingClientRect().top < window.innerHeight
+            messagesEndRef.current.scrollHeight + 100 >
+              messagesEndRef.current.clientHeight + messagesEndRef.current.scrollTop
           ) {
             shouldScroll.current = true;
           } else {
@@ -97,7 +106,12 @@ export default function ChatView({ requestId, userId }) {
     event.preventDefault();
     if (message.trim() === '') return;
     connectionRef.current.send(message);
-    const ms = { messageText: message, senderName: 'You', sentAt: new Date().toISOString() };
+    const ms = {
+      messageText: message,
+      senderId: JSON.parse(localStorage.getItem('user'))?.id,
+      senderName: JSON.parse(localStorage.getItem('user'))?.username,
+      sentAt: new Date().toISOString(),
+    };
     setMessages((prevMessages) => [...prevMessages, ms]);
     console.log(ms.sentAt);
     shouldScroll.current = true;
@@ -133,23 +147,20 @@ export default function ChatView({ requestId, userId }) {
             Participants:
           </Typography>
           <Divider />
-          <List ref={messagesEndRef}>
-            <ListItem key="RemySharp">
-              <ListItemAvatar>
-                <Avatar alt="Remy Sharp" src="https://ahmedyassin.dev/images/me.png" />
-              </ListItemAvatar>
-              <ListItemText primary="John Wick - You" />
-            </ListItem>
-            <ListItem key="Alice">
-              <ListItemAvatar>
-                <Avatar alt="Alice" src="https://ahmedyassin.dev/images/me.png" />
-              </ListItemAvatar>
-              <ListItemText primary="Alice - Developer" />
-            </ListItem>
+          <List>
+            {participants.map((participant) => (
+              <ListItem key={participant.id}>
+                <ListItemAvatar>
+                  <Avatar alt={participant.username} src={participant.picture} />
+                </ListItemAvatar>
+                <ListItemText primary={participant.username} secondary={participant.userRole} />
+              </ListItem>
+            ))}
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
           <List
+            ref={messagesEndRef}
             sx={{
               height: '70vh',
               overflowY: 'auto',
@@ -161,16 +172,16 @@ export default function ChatView({ requestId, userId }) {
                   <Grid container>
                     <Grid item xs={12}>
                       <ListItemText
-                        // align={msg.sender === userId ? 'right' : 'left'}
-                        align="right"
+                        align={msg.senderId === participants[1].id ? 'right' : 'left'}
+                        // align="right"
                         primary={msg.messageText}
                         secondary={msg.senderName}
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <ListItemText
-                        //  align={msg.sender === userId ? 'right' : 'left'}
-                        align="right"
+                        align={msg.senderId === participants[1].id ? 'right' : 'left'}
+                        // align="right"
                         secondary={fTimeOnly(new Date(msg.sentAt))}
                       />
                     </Grid>
@@ -189,7 +200,6 @@ export default function ChatView({ requestId, userId }) {
                 <CircularProgress />
               </Box>
             )}
-            <div ref={messagesEndRef} />
           </List>
           <Divider />
           <StyledForm onSubmit={handleSendMessage}>
