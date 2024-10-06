@@ -17,7 +17,15 @@ import Iconify from 'src/components/iconify';
 import ConfirmationDialog from '../confirmation-dialog';
 
 // ----------------------------------------------------------------------
-export default function SupportRequestTableRow({ SR ,user}) {
+
+const statusColor = {
+  Pending: 'warning',
+  Approved: 'success',
+  Rejected: 'error',
+  Cancelled: 'error',
+  Closed: 'info',
+};
+export default function SupportRequestTableRow({ SR, user }) {
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -46,23 +54,6 @@ export default function SupportRequestTableRow({ SR ,user}) {
     }, 1000);
   };
 
-  let statusColor;
-  switch (SR.status) {
-    case 'Resolved':
-      statusColor = 'success';
-      break;
-    case 'Reported':
-      statusColor = 'error';
-      break;
-
-    case 'Testing':
-      statusColor = 'warning';
-      break;
-    default:
-      statusColor = 'info';
-      break;
-  }
-
   return (
     <>
       <ConfirmationDialog
@@ -75,24 +66,24 @@ export default function SupportRequestTableRow({ SR ,user}) {
           <Typography variant="subtitle2">
             <Link
               component={ReactRouterLink}
-              to={`chat/:${SR.id}/:${user.id}`}
-              color="blue"
+              to={
+                ['Approved', 'Closed'].includes(SR.status) ? `chat/${SR.id}/${user.id}` : undefined
+              }
+              color={['Approved', 'Closed'].includes(SR.status) ? 'blue' : 'red'}
               underline="hover"
               variant="subtitle2"
-
             >
-              enter chat room
+              {['Approved', 'Closed'].includes(SR.status) ? 'Join Chat Room' : 'No Chat Room'}
             </Link>
           </Typography>
         </TableCell>
 
-        <TableCell>{SR.lastModified}</TableCell>
-        {/* <TableCell>{SR.customer}</TableCell> */}
-        {/* <TableCell>{SR.dev}</TableCell> */}
-        {/* <TableCell>{SR.bugTitle}</TableCell> */}
-        
+        <TableCell>{SR.bug.title}</TableCell>
+        <TableCell>{SR.dev?.username || 'No Dev assigned'}</TableCell>
+        <TableCell>{SR.customer.username}</TableCell>
+
         <TableCell>
-          <Label color={statusColor}>{SR.status}</Label>
+          <Label color={statusColor[SR.status]}>{SR.status}</Label>
         </TableCell>
 
         <TableCell align="right">
@@ -100,7 +91,6 @@ export default function SupportRequestTableRow({ SR ,user}) {
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
         </TableCell>
-      
       </TableRow>
 
       <Popover
@@ -109,9 +99,9 @@ export default function SupportRequestTableRow({ SR ,user}) {
         onClose={handleCloseMenu}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{sx: { width: 140 }}}
+        PaperProps={{ sx: { width: 140 } }}
       >
-        <MenuItem onClick={()=>handleCloseMenu()}>
+        <MenuItem onClick={() => handleCloseMenu()}>
           <Iconify icon="duo-icons:approved" sx={{ mr: 2 }} />
           Approve
         </MenuItem>
@@ -130,7 +120,6 @@ export default function SupportRequestTableRow({ SR ,user}) {
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Close
         </MenuItem>
-
       </Popover>
     </>
   );
@@ -138,5 +127,5 @@ export default function SupportRequestTableRow({ SR ,user}) {
 
 SupportRequestTableRow.propTypes = {
   SR: PropTypes.object.isRequired,
-  user:PropTypes.object
+  user: PropTypes.object,
 };

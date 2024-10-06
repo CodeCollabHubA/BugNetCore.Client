@@ -23,7 +23,7 @@ import { fTimeOnly } from 'src/utils/format-time';
 
 export default function ChatView({ requestId, userId }) {
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(null);
 
   const connectionRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -155,7 +155,7 @@ export default function ChatView({ requestId, userId }) {
               overflowY: 'auto',
             }}
           >
-            {messages.length > 0 ? (
+            {messages !== null ? (
               messages.map((msg, index) => (
                 <ListItem key={index}>
                   <Grid container>

@@ -72,7 +72,7 @@ console.log(dataFiltered)
     <Container>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Supoort Request List</Typography>
+        <Typography variant="h4">Supoort Requests</Typography>
       </Stack>
 
       <Card>
@@ -91,7 +91,6 @@ console.log(dataFiltered)
                   { id: 'dev', label: 'Developer Name'},
                   { id: 'customer', label: 'Customer Name'},
                   { id: 'status', label: 'Status' },
-                  { id: 'lastModified', label: 'Last Modified'},
                   { id: '' },
                 ]}
               />
