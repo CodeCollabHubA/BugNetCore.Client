@@ -88,7 +88,7 @@ export default function BugTableRow({ bug }) {
               underline="hover"
               variant="subtitle2"
             >
-              {bug.id}
+              {bug.title}
             </Link>{' '}
           </Typography>
         </TableCell>

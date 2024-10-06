@@ -171,8 +171,8 @@ export default function BugDetailView() {
 
             <Stack spacing={2} sx={{ p: 3 }}>
               <Typography variant="subtitle2">
-                <strong>Bug Id: </strong>
-                {bug.id}
+                <strong>Bug Title: </strong>
+                {bug.title}
               </Typography>
               <Typography variant="body1">
                 <strong>Description: </strong> {bug.description}
@@ -282,7 +282,7 @@ export default function BugDetailView() {
                     <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
                   </Typography>
                   <Typography variant="body2">
-                    <strong>Developer Name: </strong> {bug.dev.username}
+                    <strong>Developer Name: </strong> {bug.dev?.username}
                   </Typography>
                 </>
               )}
@@ -326,7 +326,6 @@ export default function BugDetailView() {
                     ))}
                   </Await>
                 </Suspense>
-                {/* <div ref={commentsContainerRef} /> */}
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
                 <Formik

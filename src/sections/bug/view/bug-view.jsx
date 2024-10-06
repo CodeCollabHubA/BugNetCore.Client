@@ -108,7 +108,7 @@ export default function BugPage() {
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  { id: 'bugId', label: 'Bug Id'},
+                  { id: 'title', label: 'Bug Title'},
                   { id: 'projectName', label: 'Project Name'},
                   { id: 'description', label: 'Description'},
                   { id: 'category', label: 'category', align: 'center' },
