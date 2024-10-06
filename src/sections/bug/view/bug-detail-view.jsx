@@ -76,6 +76,7 @@ export default function BugDetailView() {
       sx={{
         top: 0,
         height: '20rem',
+
         position: 'relative',
         margin:'1rem ',
         borderRadius:'1rem'
@@ -254,7 +255,7 @@ export default function BugDetailView() {
                   <strong>Admin Assigned Priority: </strong> {bug.adminAssignedPriority}
                 </Typography>
                 <Typography variant="body2">
-                    <strong>Developer Name: </strong> {bug.dev} 
+                    <strong>Developer Name: </strong> {bug.dev.username} 
                 </Typography>
                 </>
                 }
