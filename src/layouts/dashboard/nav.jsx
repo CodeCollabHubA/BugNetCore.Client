@@ -26,13 +26,12 @@ export default function Nav({ openNav, onCloseNav }) {
   const pathname = usePathname();
 
   const upLg = useResponsive('up', 'lg');
-  const [user, setUser] = useState();
-
-  setTimeout(() => {
-    setUser(JSON.parse(localStorage.getItem('user')));
-  }, 300);
+  const [user, setUser] = useState({});
 
   useEffect(() => {
+    setTimeout(() => {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }, 300);
     if (openNav) {
       onCloseNav();
     }
@@ -66,9 +65,13 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} item={item} />
-      ))}
+      {navConfig.map((item) => {
+        console.log('checking nav');
+        if (item.roles.includes(user?.userRole || 'Customer')) {
+        return <NavItem key={item.title} item={item} />;
+        }
+        return null;
+      })}
     </Stack>
   );
 
