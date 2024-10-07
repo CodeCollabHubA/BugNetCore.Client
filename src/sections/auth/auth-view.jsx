@@ -232,7 +232,8 @@ export default function AuthView({ isSignup }) {
         direction={{ xs: 'column', md: 'row' }}
         alignItems="center"
         justifyContent="center"
-        sx={{ height: 1 }}
+        sx={{ minHeight: 1 }}
+        overflow="auto"
       >
         <Card
           sx={{
