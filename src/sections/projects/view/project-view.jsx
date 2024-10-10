@@ -1,17 +1,15 @@
 import { useState } from 'react';
 
-import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { useRouteLoaderData } from 'react-router-dom';
 import { Button, Card, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import ProjectTableToolbar from '../project-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import ProjectTableHead from '../project-table-head';
-
 
 import ProjectModal from '../project-modal';
 import ProjectTableRow from '../project-table-row';
@@ -22,8 +20,7 @@ import TableNoData from '../table-no-data';
 // ----------------------------------------------------------------------
 
 export default function PrjectsView() {
-  const _projects = useRouteLoaderData('project');
-  const [projects,setProjects]=useState(_projects)
+  const {projects} = useMyContext()
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -45,13 +42,12 @@ export default function PrjectsView() {
   };
 
   const handleChangePage = async(event, newPage) => {
-    const numberOfProjectsNeeded = (newPage + 1) * rowsPerPage;
-    const {records:dataOfPage} = await getAllProjectsWithFilterPaginationAndSorting(null,null,null,null,numberOfProjectsNeeded,newPage)
-    console.log(numberOfProjectsNeeded)
-    console.log(dataOfPage)
-    console.log(newPage)
-    setProjects(dataOfPage)
-    setPage(newPage);
+    // const pagesCount = Math.ceil(projects.length / rowsPerPage);
+    // if (pagesCount === 1) return null;
+    // const pages = _.range(1, pagesCount + 1);
+    // console.log(newPage)
+    // return setPage(page+1);
+    setPage(page+1);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -68,7 +64,6 @@ export default function PrjectsView() {
     comparator: getComparator(order, orderBy),
     filterFunction: (Project) => Project.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
   });
-console.log(dataFiltered)
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -90,7 +85,6 @@ console.log(dataFiltered)
 
       <Card>
         <ProjectTableToolbar filterName={filterName} onFilterName={handleFilterByName} />
-
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
@@ -99,10 +93,9 @@ console.log(dataFiltered)
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  // { id: 'ProjectId', label: 'Project Id'},
+                  {id:'0'},
                   { id: 'projectName', label: 'Project Name'},
                   { id: 'description', label: 'Description'},
-                  // { id: 'category', label: 'category', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}

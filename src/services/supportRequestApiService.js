@@ -60,13 +60,24 @@ export const createsupportRequest = async (req) => {
 };
 
 export const updatesupportRequest = async (id, req) => {
-  const { data } = await http.put(`${supportRequestApi}/${id}`, req);
+  const { data } = await http.put(`${supportRequestApi}/${id}`, req,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+  });
 
   return data;
 };
 
-export const deletesupportRequest = async (id) => {
-  const { data } = await http.delete(`${supportRequestApi}/${id}`);
+export const deletesupportRequest = async (id, rowVersion) => {
+  const payLoad = {
+    id,
+    rowVersion,
+  };
+  const { data } = await http.delete(`${supportRequestApi}/${id}`,{
+    data: payLoad,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   return data;
 };

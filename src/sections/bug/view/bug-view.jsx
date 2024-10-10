@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { useRouteLoaderData } from 'react-router-dom';
 
-
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -12,11 +11,8 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-// import { bugs } from 'src/_mock/bug';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { getAllBugsWithFilterPaginationAndSorting } from 'src/services/bugApiService';
 
 import TableNoData from '../table-no-data';
 import BugTableRow from '../bug-table-row';
@@ -29,10 +25,9 @@ import BugModal from '../bug-modal';
 // ----------------------------------------------------------------------
 
 export default function BugPage() {
-  const _bugs = useRouteLoaderData('bugs');
-  const [bugs,setBugs]=useState(_bugs)
+  const {bugs}=useMyContext()
+
   const [page, setPage] = useState(0);
-  console.log(_bugs)
 
   const [order, setOrder] = useState('asc');
 
@@ -54,13 +49,13 @@ export default function BugPage() {
 
   const handleChangePage = async(event, newPage) => {
     // TODO: Complete the code below to fetch the data as the user goes to next page
-    const numberOfBugsNeeded = (newPage + 1) * rowsPerPage;
-    const {records:dataOfPage} = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,numberOfBugsNeeded,newPage)
-    console.log(numberOfBugsNeeded)
-    console.log(dataOfPage)
-    console.log(newPage)
-    setBugs(dataOfPage)
-    setPage(newPage);
+    // const numberOfBugsNeeded = (newPage + 1) * rowsPerPage;
+    // const {records:dataOfPage} = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,numberOfBugsNeeded,newPage)
+    // console.log(numberOfBugsNeeded)
+    // console.log(dataOfPage)
+    // console.log(newPage)
+    // setBugs(dataOfPage)
+    setPage(page+1);
   };
 
   const handleChangeRowsPerPage = (event) => {

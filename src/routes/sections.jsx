@@ -3,10 +3,7 @@ import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { logout as logoutAction } from 'src/services/authService';
 
 import DashboardLayout, {loader as dashboardLoader} from 'src/layouts/dashboard';
-import { loader as bugsLoader} from 'src/pages/bug';
-import { loader as supportRequestLoader} from 'src/pages/supportRequest';
-import { loader as projectLoader} from 'src/pages/project';
-import { loader as userLoader} from 'src/pages/user';
+
 import ResetPasswordPage from 'src/pages/auth-reset-pasword';
 import { loader as bugDetailsLoader} from 'src/sections/bug/view/bug-detail-view';
 import VerifyEmailPage from 'src/pages/auth-verify-email';
@@ -33,7 +30,6 @@ const routes = createBrowserRouter([
       {
         path: 'bug',
         id: 'bugs',
-        loader: bugsLoader,
         children: [
           { element: <BugPage />, index: true },
           {
@@ -48,18 +44,18 @@ const routes = createBrowserRouter([
         path: 'user',
         element: <UserPage />,
         id:'user',
-        loader: userLoader
+      
        },
       { 
         path: 'project',
         element: <ProjectsPage />,
         id:'project',
-        loader: projectLoader
+   
       },
       { 
         path: 'supportRequest',
         id:'supportRequest',
-        loader: supportRequestLoader,
+ 
         children:[
           {element: <SupportRequestPage />, index:true},
           {

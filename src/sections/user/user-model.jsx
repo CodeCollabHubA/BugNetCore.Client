@@ -1,4 +1,5 @@
 import { PropTypes } from 'prop-types';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -18,13 +19,13 @@ const style = {
 
 // Options
 
-const userRole = ["Admin", "User"];
+const userRole = ["Admin", "Customer","Dev"];
 
 
 
 const UserModal = ({ open, handleClose, user}) => {
-console.log(user)
 
+  const {users,setUsers}=useMyContext()
 
   const initialValues = {
     userRole:user?.role||'',
@@ -40,14 +41,19 @@ console.log(user)
     formData.userRole =values.userRole
     
     console.log(formData)
-
+    console.log(user)
     try {
 
-    if(user){
-        const data = await updateUser(user.id,{...formData})
-        console.log('Bug submitted successfully:',data)
+        console.log('inside updatae')
+        user.userRole = formData.userRole
+        const data = await updateUser(user.id,user)
+        console.log('user Role changed successfully:',data)
+        const newUsers =[...users]
+        const index = users.indexOf(user)
+        newUsers[index]={...user}
+        setUsers(newUsers)
         handleClose(); // Close modal after submission
-    }
+
     } catch (error) {
       console.error('Error submitting bug:', error);
     }

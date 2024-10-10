@@ -1,11 +1,11 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-
 import ThemeProvider from 'src/theme';
 
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'react-hot-toast';
+import ContextProvider from './hooks/ContextProvider';
 import App from './app';
 
 // ----------------------------------------------------------------------
@@ -19,7 +19,9 @@ root.render(
         <ThemeProvider>
           <Analytics />
           <Toaster />
-          <App />
+            <ContextProvider>
+              <App />
+            </ContextProvider>
         </ThemeProvider>
       </Suspense>
     </HelmetProvider>

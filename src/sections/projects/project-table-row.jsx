@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link as ReactRouterLink, useNavigate } from 'react-router-dom';
+import { Link as ReactRouterLink } from 'react-router-dom';
 
 import Link from '@mui/material/Link';
 import Popover from '@mui/material/Popover';
@@ -10,6 +10,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Label from 'src/components/label';
 import { deleteProject } from 'src/services/projectApiService';
 import toast from 'react-hot-toast';
@@ -20,12 +21,13 @@ import ProjectModal from './project-modal';
 // ----------------------------------------------------------------------
 // id, description, projectName, category, status;
 export default function ProjectTableRow({ project }) {
+  const {projects,setProjects}= useMyContext()
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [edit,setEdit]=useState(project)
-  const navigate = useNavigate();
-console.log(project)
+  // const navigate = useNavigate();
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -39,6 +41,10 @@ console.log(project)
   const handleProjectDeletion = async () => {
     const asyncOperation = async () => {
       setOpenDeleteDialog(false);
+      const newProjects = [...projects]
+      const index= projects.indexOf(project)
+      delete newProjects[index]
+      setProjects(newProjects)
       return deleteProject(project.id, project.rowVersion);
     };
     await toast.promise(asyncOperation(), {
@@ -47,9 +53,6 @@ console.log(project)
       error: (err) => `Sorry, try again!`,
       duration: 3000,
     });
-    setTimeout(() => {
-      navigate(0);
-    }, 1000);
   };
 
   let statusColor;
@@ -78,6 +81,8 @@ console.log(project)
         onConfirm={handleProjectDeletion}
       />
       <TableRow hover>
+        
+        <TableCell>{null}</TableCell>
         <TableCell>
           <Typography variant="subtitle2">
             {' '}

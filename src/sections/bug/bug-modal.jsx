@@ -1,9 +1,8 @@
-import  { useEffect, useState } from 'react';
 import { PropTypes } from 'prop-types';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
 import { Formik, Form, Field,ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { getProjectData } from 'src/services/projectApiService';
 import { createBug,updateBug } from 'src/services/bugApiService';
 
 
@@ -25,29 +24,20 @@ const severities = ['Urgent', 'High', 'Medium', 'Low'];
 
 
 const BugModal = ({ open, handleClose, bug}) => {
-  const [projects,setProjects]=useState([])
-  useEffect(()=>{
-    const getproject=async()=>{
-      try {
-        const data = await getProjectData()
-        setProjects(data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getproject()
-  },[])
+  const {projects,bugs,setBugs}= useMyContext()
 
 
   const initialValues = {
+    bugTitle: bug?.title||'',
     description: bug?.description||'',
     category: bug?.category||'',
     customerAssignedSeverity: bug?.customerAssignedSeverity||'',
     projectName:bug?.project.name||'',
-    screenshotFile: bug?.screenshot||null,
+    screenshotFile: bug?.screenshotFile||null,
   };
 
   const validationSchema = Yup.object({
+    bugTitle: Yup.string().required('enter a title '),
     description: Yup.string().required('enter a description'),
     category: Yup.string().required('select a category'),
     customerAssignedSeverity: Yup.string().required('select a severity'),
@@ -59,6 +49,7 @@ const BugModal = ({ open, handleClose, bug}) => {
     console.log('inside')
     const {id} = projects.find(e=>e.name === values.projectName)
     const formData = new FormData();
+    formData.title =values.bugTitle
     formData.description =values.description
     formData.category =values.category
     formData.customerAssignedSeverity =values.customerAssignedSeverity
@@ -72,13 +63,23 @@ const BugModal = ({ open, handleClose, bug}) => {
     try {
 
       if(bug){
-        formData.id = bug.id
-        formData.rowVersion = bug.rowVersion
-        const data = await updateBug(bug.id,{...formData})
+        bug.title = formData.title
+        bug.description = formData.description
+        bug.category = formData.category
+        bug.customerAssignedSeverity = formData.customerAssignedSeverity
+        bug.screenshot = formData.screenshotFile
+        const data = await updateBug(bug.id,bug)
         console.log('Bug submitted successfully:',data)
+        const newBugs =[...bugs]
+        const index = bugs.indexOf(bug)
+        newBugs[index]={...bug}
+        setBugs(newBugs)
       }else{
       
       const data = await createBug({...formData})
+      const newBug = [...bugs];
+        newBug.push({ ...data});
+        setBugs(newBug);
       console.log('Bug submitted successfully:',data );
       }
       handleClose(); // Close modal after submission
@@ -97,6 +98,21 @@ const BugModal = ({ open, handleClose, bug}) => {
         >
           {({ setFieldValue }) => (
             <Form>
+              <Field name="bugTitle">
+                {({ field }) => (
+                  <TextField
+                    {...field}
+                    
+                    label="Title"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="description">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage>
               <Field name="description">
                 {({ field }) => (
                   <TextField
