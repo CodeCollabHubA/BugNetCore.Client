@@ -55,6 +55,8 @@ export async function verifyEmail(token) {
   }
 }
 export async function login(email, password) {
+
+
   const response = {
     validationErrors: false,
     success: false,
@@ -65,7 +67,9 @@ export async function login(email, password) {
       loading: 'Checking your identity ...',
       success: (res) => {
         const { data: user } = res;
+        console.log(res,'auth')
         const jwtToken = user.accessToken;
+      
         storeTokenInLocalStorage(jwtToken, '');
         return `Login successful`;
       },
@@ -128,16 +132,19 @@ export async function confirmPasswordReset(token, newPassword, confirmPassword) 
 export async function storeTokenInLocalStorage(jwtToken, toastMessage = 'Login successful') {
   localStorage.setItem('token', jwtToken);
   const decodedToken = jwtDecode(jwtToken);
-
+console.log(decodedToken)
   const expiration = decodedToken.exp;
   localStorage.setItem('expiration', expiration);
 
   const userId = decodedToken.nameid;
 
   const { data: user } = await http.get(`${userApi}/${userId}`);
+  
+
   localStorage.setItem('user', JSON.stringify(user));
 
   localStorage.setItem('role', user.userRole);
+  
 
   if (toastMessage !== '') {
     toast.success(toastMessage);
@@ -164,7 +171,7 @@ export function getTokenDuration() {
 
 export function getAuthToken() {
   const token = localStorage.getItem('token');
-
+  
   if (!token) {
     return null;
   }

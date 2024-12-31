@@ -9,6 +9,7 @@ import { getAuthToken, getTokenDuration } from 'src/services/authService';
 import { countProjectsByStatus } from 'src/services/projectApiService';
 import { countBugsByStatus } from 'src/services/bugApiService';
 import { countUsersByRole } from 'src/services/userApiService';
+import { CircularProgress } from '@mui/material';
 
 import Nav from './nav';
 import Main from './main';
@@ -40,7 +41,8 @@ export default function DashboardLayout() {
   }, [token, submit]);
 
   return (
-    <>
+    
+<>
       <Header onOpenNav={() => setOpenNav(true)} />
 
       <Box
@@ -50,8 +52,10 @@ export default function DashboardLayout() {
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+        <Suspense fallback={CircularProgress}>
+          <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
+        </Suspense>
         <Main>
           <Suspense>
             <Outlet />
@@ -71,8 +75,8 @@ async function loadBugsStats() {
   };
 }
 
-export async function loader() {
-  const token = await getAuthToken();
+export function loader() {
+  const token = getAuthToken();
   if (token == null) {
     return redirect('/auth');
   }

@@ -65,9 +65,10 @@ const BugModal = ({ open, handleClose, bug}) => {
     formData.status ="Reported"
     formData.screenshotFile= values.screenshotFile
     formData.projectId =id
+    formData.title= values.title
     
     
-    console.log(formData)
+    // console.log(formData)
 
     try {
 
@@ -97,6 +98,21 @@ const BugModal = ({ open, handleClose, bug}) => {
         >
           {({ setFieldValue }) => (
             <Form>
+              <Field name="title">
+                {({ field }) => (
+                  <TextField
+                    {...field}
+                    
+                    label="Bug Title"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="title">
+                { msg => <span style={{ color: 'red' }}>{msg}</span> }
+              </ErrorMessage>
               <Field name="description">
                 {({ field }) => (
                   <TextField

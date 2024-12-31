@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
 import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
+import { useMyContext } from 'src/sections/contextApi';
+// import { useRouteLoaderData } from 'react-router-dom';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { useRouteLoaderData } from 'react-router-dom';
 import { Button, Card, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -22,8 +23,11 @@ import TableNoData from '../table-no-data';
 // ----------------------------------------------------------------------
 
 export default function PrjectsView() {
-  const _projects = useRouteLoaderData('project');
-  const [projects,setProjects]=useState(_projects)
+  // const oldProjects = useRouteLoaderData('project');
+  const {projects,setProjects} = useMyContext()
+  
+  console.log(projects)
+
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -68,7 +72,7 @@ export default function PrjectsView() {
     comparator: getComparator(order, orderBy),
     filterFunction: (Project) => Project.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
   });
-console.log(dataFiltered)
+console.log(dataFiltered,'this datafilterd')
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -99,10 +103,8 @@ console.log(dataFiltered)
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
-                  // { id: 'ProjectId', label: 'Project Id'},
                   { id: 'projectName', label: 'Project Name'},
                   { id: 'description', label: 'Description'},
-                  // { id: 'category', label: 'category', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
                 ]}

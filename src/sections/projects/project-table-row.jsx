@@ -25,7 +25,7 @@ export default function ProjectTableRow({ project }) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [edit,setEdit]=useState(project)
   const navigate = useNavigate();
-console.log(project)
+
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -39,7 +39,9 @@ console.log(project)
   const handleProjectDeletion = async () => {
     const asyncOperation = async () => {
       setOpenDeleteDialog(false);
-      return deleteProject(project.id, project.rowVersion);
+      const data = await deleteProject(project.id,project.rowVersion);
+      return data
+
     };
     await toast.promise(asyncOperation(), {
       loading: 'Processing...',

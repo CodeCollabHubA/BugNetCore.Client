@@ -23,6 +23,7 @@ import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
 import { login, storeTokenInLocalStorage, getAuthToken, signUp } from 'src/services/authService';
 import apiEndPoints from 'src/services/apiEndPoints';
+
 // ----------------------------------------------------------------------
 
 const demoAccounts = {
@@ -43,9 +44,11 @@ export default function AuthView({ isSignup }) {
   const [username, setUsername] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
+  
   useEffect(() => {
     const checkToken = () => {
       const token = getAuthToken();
+      
       if (token) {
         router.push('/');
       }
@@ -73,10 +76,16 @@ export default function AuthView({ isSignup }) {
       res = await signUp(username, email, password, confirmPassword);
     } else {
       res = await login(email, password);
+      
     }
 
     if (res.success && !isSignup) {
-      router.push('/');
+      setTimeout(
+        ()=>{
+          
+          router.push('/')
+        }
+    ,1000)
     } else if (res.validationErrors) {
       setValidationErrors(res.errors);
     }

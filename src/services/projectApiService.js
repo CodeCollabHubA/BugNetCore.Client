@@ -60,13 +60,23 @@ export const createProject = async (req) => {
 };
 
 export const updateProject = async (id, req) => {
-  const { data } = await http.put(`${projectApi}/${id}`, req);
+  const { data } = await http.put(`${projectApi}/${id}`, req,{
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }});
 
   return data;
 };
 
-export const deleteProject = async (id) => {
-  const { data } = await http.delete(`${projectApi}/${id}`);
+export const deleteProject =async (id, rowVersion) => {
+  const payLoad = {
+    id,
+    rowVersion,
+  };
+  const { data } = await http.delete(`${projectApi}/${id}`,{
+    data: payLoad,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   return data;
 };

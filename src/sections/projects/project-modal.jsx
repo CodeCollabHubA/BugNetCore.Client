@@ -1,8 +1,12 @@
+import { useEffect } from 'react';
 import { PropTypes } from 'prop-types';
-import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
+import { createProject, updateProject } from 'src/services/projectApiService';
+import { Modal, Box, TextField, Button} from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { createProject, updateProject } from 'src/services/projectApiService';
+import { useLoaderData } from 'react-router-dom';
+import { useMyContext } from '../contextApi';
+
 
 
 const style = {
@@ -17,24 +21,23 @@ const style = {
 };
 
 // Options
-const categories = ['UI', 'Backend', 'Frontend', 'Database', 'Other'];
 
 
 
 const ProjectModal = ({ open, handleClose, project}) => {
-
-
-
+  const oldProjects = useLoaderData('project')
+  const {projects,setProjects}=useMyContext()
+  useEffect(()=>{
+    setProjects(oldProjects)
+  })
   const initialValues = {
     projectName:project?.name||'', 
     description:project?.description||'', 
-    category:'',
   };
 
   const validationSchema = Yup.object({
     projectName: Yup.string().required('enter a name'),
     description: Yup.string().required('enter a description'),
-    category: Yup.string().required('select a category'),
 
   });
 
@@ -44,19 +47,28 @@ const ProjectModal = ({ open, handleClose, project}) => {
     const formData = new FormData();
     formData.name =values.projectName
     formData.description =values.description
-    formData.category =values.category
+  
     
     console.log(formData)
 
     try {
       if(project){
+        console.log('inside updatae')
         formData.id = project.id
+        formData.rowVersion = project.rowVersion
+        const newProjects =[...projects]
+        const index = newProjects.indexOf(project)
+        newProjects[index] = {name:formData.name,description:formData.description,...newProjects[index]} 
+        setProjects(newProjects)
         const data = await updateProject(project.id,{...formData})
-        console.log('Bug submitted successfully:',data)
+        console.log('Project saved Changes successfully:',data)
       }else{
-      
       const data = await createProject({...formData})
-      console.log('Bug submitted successfully:',data );
+      const newProject = [...projects];
+      newProject.push({ ...data});
+      setProjects(newProject);
+      console.log(newProject)
+      console.log('Project submitted successfully:',data );
       }
       handleClose(); // Close modal after submission
     } catch (error) {
@@ -104,27 +116,7 @@ const ProjectModal = ({ open, handleClose, project}) => {
               <ErrorMessage name="description">
                 { msg => <span style={{ color: 'red' }}>{msg}</span> }
               </ErrorMessage>              
-              <Field name="category">
-                {({ field }) => (
-                  <Autocomplete
-                    {...field}
-                  
-                    options={categories}
-                    onChange={(event,value) => {setFieldValue('category', value)}}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Category"
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    )}
-                  />
-                )}
-              </Field>
               
-
               <Button type="submit" variant="contained" color="primary">
                 Submit
               </Button>

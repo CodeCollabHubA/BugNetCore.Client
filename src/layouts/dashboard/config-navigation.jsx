@@ -13,7 +13,7 @@ const navConfig = [
     icon: icon('ic_analytics'),
     roles: ['Admin', 'Customer', 'Dev'],
   },
-  {
+  { 
     title: 'bugs',
     path: '/bug',
     icon: icon('ic_bug'),

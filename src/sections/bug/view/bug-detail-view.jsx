@@ -9,10 +9,7 @@ import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Await, defer, useParams, useRouteLoaderData } from 'react-router-dom';
-import {
-  createComment,
-  getAllCommentsWithFilterPaginationAndSorting,
-} from 'src/services/commentApiService';
+import {createComment,getAllCommentsWithFilterPaginationAndSorting} from 'src/services/commentApiService';
 import { Suspense, useState, useRef, useEffect } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
@@ -127,7 +124,7 @@ export default function BugDetailView() {
     formData.status = values.status || bug.status;
     formData.ProjectId = bug.project.id;
     formData.category = bug.category;
-
+console.log(formData)
     try {
       const data = await updateBug(bugId, { ...formData });
       console.log('Edititng finish successfully:', data);
@@ -366,13 +363,3 @@ export async function loader({ request, params }) {
   const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
   return defer({ comments: records });
 }
-// async function loadComments(id) {
-//   const { records } = await getAllCommentsWithFilterPaginationAndSorting('bug.id', id);
-//   return records;
-// }
-// export async function loader({ request, params }) {
-//   const id = params.bugId;
-//   return defer({
-//     comments: loadComments(id),
-//   });
-// }

@@ -6,6 +6,7 @@ import ThemeProvider from 'src/theme';
 
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'react-hot-toast';
+import ContextProvider from './sections/contextApi';
 import App from './app';
 
 // ----------------------------------------------------------------------
@@ -19,7 +20,9 @@ root.render(
         <ThemeProvider>
           <Analytics />
           <Toaster />
-          <App />
+          <ContextProvider>
+            <App />
+          </ContextProvider>
         </ThemeProvider>
       </Suspense>
     </HelmetProvider>

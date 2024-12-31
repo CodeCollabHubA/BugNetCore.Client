@@ -1,11 +1,12 @@
 import { Helmet } from 'react-helmet-async';
-import { ProjectsView } from 'src/sections/projects/view';
 import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
+import { ProjectsView } from 'src/sections/projects/view';
 
 
 // ----------------------------------------------------------------------
 
 export default function PrjectsPage() {
+ 
   return (
     <>
       <Helmet>
@@ -27,6 +28,5 @@ export async function loader() {
     25,
     1
   );
-
   return projects;
 }

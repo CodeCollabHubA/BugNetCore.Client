@@ -28,6 +28,7 @@ export default function AppQuickActions({ title, subheader, list, ...other }) {
         {list.map((site) => (
           // <ConditionalRendering key={site.name} path={site.path} open={openModal} handleClose ={() => setOpenModal(false)}>
           <Paper
+          key={site.name}
             variant="outlined"
             sx={{
               py: 2.5,
