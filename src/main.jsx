@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
-
 import ThemeProvider from 'src/theme';
 
 import { Analytics } from '@vercel/analytics/react';

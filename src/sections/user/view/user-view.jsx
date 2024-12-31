@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -12,7 +13,6 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from 'src/components/scrollbar';
 
-import { useRouteLoaderData } from 'react-router-dom';
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
@@ -24,9 +24,7 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
-  const _users = useRouteLoaderData('user');
-  
-  // const [users,setUsers]=useState(_users)
+  const{users}=useMyContext()
   
   const [page, setPage] = useState(0);
 
@@ -52,7 +50,7 @@ export default function UserPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = _users.map((n) => n.name);
+      const newSelecteds = users.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -92,7 +90,7 @@ export default function UserPage() {
   };
 
   const dataFiltered = applyFilter({
-    inputData: _users,
+    inputData: users,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -122,7 +120,7 @@ export default function UserPage() {
               <UserTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={_users.length}
+                rowCount={users.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
@@ -141,21 +139,20 @@ export default function UserPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <UserTableRow
+                      user={row}
                       key={row.id}
                       username={row.username}
                       role={row.userRole}
-                      // status={row.status}
                       email={row.email}
                       avatarUrl={row.picture}
                       isVerified={row.isVerified}
-                      // selected={selected.indexOf(row.name) !== -1}
                       handleClick={(event) => handleClick(event, row.name)}
                     />
                   ))}
 
                 <TableEmptyRows
                   height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
                 />
 
                 {notFound && <TableNoData query={filterName} />}
@@ -167,7 +164,7 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={_users.length}
+          count={users.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}

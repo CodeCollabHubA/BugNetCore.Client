@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { PropTypes } from 'prop-types';
-import { createProject, updateProject } from 'src/services/projectApiService';
-import { Modal, Box, TextField, Button} from '@mui/material';
+import { useMyContext } from 'src/hooks/ContextProvider';
+import { Modal, Box, TextField, Button } from '@mui/material';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useLoaderData } from 'react-router-dom';
@@ -25,11 +25,9 @@ const style = {
 
 
 const ProjectModal = ({ open, handleClose, project}) => {
-  const oldProjects = useLoaderData('project')
-  const {projects,setProjects}=useMyContext()
-  useEffect(()=>{
-    setProjects(oldProjects)
-  })
+
+const {projects,setProjects}=useMyContext()
+
   const initialValues = {
     projectName:project?.name||'', 
     description:project?.description||'', 
@@ -47,29 +45,26 @@ const ProjectModal = ({ open, handleClose, project}) => {
     const formData = new FormData();
     formData.name =values.projectName
     formData.description =values.description
-  
     
-    console.log(formData)
 
     try {
       if(project){
         console.log('inside updatae')
-        formData.id = project.id
-        formData.rowVersion = project.rowVersion
+        project.name = formData.name
+        project.description = formData.description
+        const data = await updateProject(project.id,project)
+        console.log('Project Changes saved successfully:',data)
         const newProjects =[...projects]
-        const index = newProjects.indexOf(project)
-        newProjects[index] = {name:formData.name,description:formData.description,...newProjects[index]} 
+        const index = projects.indexOf(project)
+        newProjects[index]={...project}
         setProjects(newProjects)
-        const data = await updateProject(project.id,{...formData})
-        console.log('Project saved Changes successfully:',data)
       }else{
-      const data = await createProject({...formData})
-      const newProject = [...projects];
-      newProject.push({ ...data});
-      setProjects(newProject);
-      console.log(newProject)
-      console.log('Project submitted successfully:',data );
-      }
+        const data = await createProject({...formData})
+        const newProject = [...projects];
+        newProject.push({ ...data});
+        setProjects(newProject);
+        console.log('Project submitted successfully:',data );
+        }
       handleClose(); // Close modal after submission
     } catch (error) {
       console.error('Error submitting bug:', error);

@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
-import { getAllSupportRequestsWithFilterPaginationAndSorting } from 'src/services/supportRequestApiService';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { useRouteLoaderData } from 'react-router-dom';
 import { Card, Table, TableBody, TableContainer, TablePagination } from '@mui/material';
 import Scrollbar from 'src/components/scrollbar';
 import SupportRequestTableToolbar from '../supportRequest-table-toolbar';
@@ -18,8 +17,7 @@ import TableNoData from '../table-no-data';
 // ----------------------------------------------------------------------
 
 export default function SupportRequestView() {
-  const _supportRequest = useRouteLoaderData('supportRequest');
-  const [supportRequests, setSupportRequests] = useState(_supportRequest);
+  const {supportRequests}= useMyContext()
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -40,20 +38,20 @@ export default function SupportRequestView() {
   };
 
   const handleChangePage = async (event, newPage) => {
-    const numberOfSupportRequestsNeeded = (newPage + 1) * rowsPerPage;
-    const { records: dataOfPage } = await getAllSupportRequestsWithFilterPaginationAndSorting(
-      null,
-      null,
-      null,
-      null,
-      numberOfSupportRequestsNeeded,
-      newPage
-    );
-    console.log(numberOfSupportRequestsNeeded);
-    console.log(dataOfPage);
-    console.log(newPage);
-    setSupportRequests(dataOfPage);
-    setPage(newPage);
+    // const numberOfSupportRequestsNeeded = (newPage + 1) * rowsPerPage;
+    // const { records: dataOfPage } = await getAllSupportRequestsWithFilterPaginationAndSorting(
+    //   null,
+    //   null,
+    //   null,
+    //   null,
+    //   numberOfSupportRequestsNeeded,
+    //   newPage
+    // );
+    // console.log(numberOfSupportRequestsNeeded);
+    // console.log(dataOfPage);
+    // console.log(newPage);
+    // setSupportRequests(dataOfPage);
+    setPage(page+1);
   };
 
   const handleChangeRowsPerPage = (event) => {

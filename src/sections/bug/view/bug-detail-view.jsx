@@ -1,4 +1,5 @@
 import toast, { Toaster } from 'react-hot-toast';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -21,13 +22,13 @@ import { updateBug } from 'src/services/bugApiService';
 
 export default function BugDetailView() {
   const { role } = localStorage;
+  const {bugs}=useMyContext()
   const severities = ['Urgent', 'High', 'Medium', 'Low'];
   const commentsContainerRef = useRef(null);
   const { bugId } = useParams();
   const { comments: oldComments } = useRouteLoaderData('bug_details');
   const [comments, setComment] = useState([...oldComments]);
   const [editing, setEditing] = useState(false);
-  const bugs = useRouteLoaderData('bugs');
   const bug = bugs.find((b) => b.id === bugId);
   const developers = ['Ahmed', 'Mohammed'];
 

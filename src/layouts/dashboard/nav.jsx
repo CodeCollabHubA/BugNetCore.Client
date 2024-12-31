@@ -64,7 +64,12 @@ export default function Nav({ openNav, onCloseNav }) {
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
       {navConfig.map((item) => {
+<<<<<<< HEAD
         if (item.roles.includes(user?.userRole)) {
+=======
+        // console.log('checking nav');
+        if (item.roles.includes(user?.userRole || 'Customer')) {
+>>>>>>> 6bc1f7b5e396c3d5156ea1a030cbc3ab42ee458f
         return <NavItem key={item.title} item={item} />;
         }
         return null;

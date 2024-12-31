@@ -92,7 +92,7 @@ export default function NotificationsPopover() {
         const connection = await notificationConnection();
         const ntfs = await connection.getAllNotifications();
         connection.listenNotifications();
-        console.log(ntfs);
+        // console.log(ntfs);
         setNotifications(
           ntfs.map((ntf) => ({
             id: ntf.notificationId,

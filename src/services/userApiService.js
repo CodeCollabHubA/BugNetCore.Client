@@ -57,14 +57,25 @@ export const createUser = async (req) => {
 
 
 export const updateUser = async (id, req) => {
-  const { data } = await http.put(`${userApi}/${id}`, req);
+  const { data } = await http.put(`${userApi}/${id}`, req,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+  });
 
   return data;
 };
 
 
-export const deleteUser = async (id) => {
-  const { data } = await http.delete(`${userApi}/${id}`);
+export const deleteUser = async (id, rowVersion) => {
+  const payLoad = {
+    id,
+    rowVersion,
+  };
+  const { data } = await http.delete(`${userApi}/${id}`,{
+    data: payLoad,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   return data;
 };

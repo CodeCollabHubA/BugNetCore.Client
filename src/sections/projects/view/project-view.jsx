@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
-import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
-import { useMyContext } from 'src/sections/contextApi';
-// import { useRouteLoaderData } from 'react-router-dom';
+import { useMyContext } from 'src/hooks/ContextProvider';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -13,7 +11,6 @@ import ProjectTableToolbar from '../project-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 import ProjectTableHead from '../project-table-head';
 
-
 import ProjectModal from '../project-modal';
 import ProjectTableRow from '../project-table-row';
 import TableEmptyRows from '../table-empty-rows';
@@ -23,11 +20,7 @@ import TableNoData from '../table-no-data';
 // ----------------------------------------------------------------------
 
 export default function PrjectsView() {
-  // const oldProjects = useRouteLoaderData('project');
-  const {projects,setProjects} = useMyContext()
-  
-  console.log(projects)
-
+  const {projects} = useMyContext()
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -49,13 +42,12 @@ export default function PrjectsView() {
   };
 
   const handleChangePage = async(event, newPage) => {
-    const numberOfProjectsNeeded = (newPage + 1) * rowsPerPage;
-    const {records:dataOfPage} = await getAllProjectsWithFilterPaginationAndSorting(null,null,null,null,numberOfProjectsNeeded,newPage)
-    console.log(numberOfProjectsNeeded)
-    console.log(dataOfPage)
-    console.log(newPage)
-    setProjects(dataOfPage)
-    setPage(newPage);
+    // const pagesCount = Math.ceil(projects.length / rowsPerPage);
+    // if (pagesCount === 1) return null;
+    // const pages = _.range(1, pagesCount + 1);
+    // console.log(newPage)
+    // return setPage(page+1);
+    setPage(page+1);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -72,7 +64,6 @@ export default function PrjectsView() {
     comparator: getComparator(order, orderBy),
     filterFunction: (Project) => Project.description.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
   });
-console.log(dataFiltered,'this datafilterd')
   const notFound = !dataFiltered.length && !!filterName;
 
   return (
@@ -94,7 +85,6 @@ console.log(dataFiltered,'this datafilterd')
 
       <Card>
         <ProjectTableToolbar filterName={filterName} onFilterName={handleFilterByName} />
-
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
@@ -103,6 +93,7 @@ console.log(dataFiltered,'this datafilterd')
                 orderBy={orderBy}
                 onRequestSort={handleSort}
                 headLabel={[
+                  {id:'0'},
                   { id: 'projectName', label: 'Project Name'},
                   { id: 'description', label: 'Description'},
                   { id: 'status', label: 'Status' },
