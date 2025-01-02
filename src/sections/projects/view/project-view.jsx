@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useMyContext } from 'src/hooks/ContextProvider';
+import { useMyContext } from 'src/hooks/contextApi';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
@@ -42,11 +42,6 @@ export default function PrjectsView() {
   };
 
   const handleChangePage = async(event, newPage) => {
-    // const pagesCount = Math.ceil(projects.length / rowsPerPage);
-    // if (pagesCount === 1) return null;
-    // const pages = _.range(1, pagesCount + 1);
-    // console.log(newPage)
-    // return setPage(page+1);
     setPage(page+1);
   };
 

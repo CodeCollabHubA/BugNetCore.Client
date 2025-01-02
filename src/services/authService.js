@@ -137,10 +137,11 @@ console.log(decodedToken)
   localStorage.setItem('expiration', expiration);
 
   const userId = decodedToken.nameid;
+ 
 
   const { data: user } = await http.get(`${userApi}/${userId}`);
-  
-
+  console.log(user,'from auth services')
+ 
   localStorage.setItem('user', JSON.stringify(user));
 
   localStorage.setItem('role', user.userRole);
@@ -156,7 +157,6 @@ export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('role');
   localStorage.removeItem('expiration');
-  
   localStorage.clear();
   return redirect('/auth');
 }

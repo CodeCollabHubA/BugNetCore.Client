@@ -45,10 +45,12 @@ export const createBug = async (req) => {
 };
 
 export const updateBug = async (id, req) => {
-
-  const { data } = await http.put(`${bugApi}/${id}`, req,{headers: {
+console.log(id,req)
+  const { data } = await http.put(`${bugApi}/${id}`, req,{
+    headers: {
     'Content-Type': 'multipart/form-data',
-  }});
+  }
+});
 
   return data;
 };

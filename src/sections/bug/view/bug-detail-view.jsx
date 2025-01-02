@@ -1,5 +1,5 @@
 import toast, { Toaster } from 'react-hot-toast';
-import { useMyContext } from 'src/hooks/ContextProvider';
+// import { useMyContext } from 'src/hooks/ContextProvider';
 import * as Yup from 'yup';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -15,6 +15,7 @@ import { Suspense, useState, useRef, useEffect } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { updateBug } from 'src/services/bugApiService';
+import { useMyContext } from 'src/hooks/contextApi';
 
 // import { bugs } from 'src/_mock/bug';
 
@@ -118,6 +119,7 @@ export default function BugDetailView() {
   const handleSave = async (values) => {
     console.log('insideSaving');
     const formData = new FormData();
+    formData.title = bug.title
     formData.dev = values.developerName;
     formData.adminAssignedPriority = values.adminAssignedPriority;
     formData.bugId = bug.id;
@@ -125,8 +127,9 @@ export default function BugDetailView() {
     formData.status = values.status || bug.status;
     formData.ProjectId = bug.project.id;
     formData.category = bug.category;
-console.log(formData)
+// console.log(formData)
     try {
+      console.log(bugId,{...formData},"1st place of order")
       const data = await updateBug(bugId, { ...formData });
       console.log('Edititng finish successfully:', data);
       setEditing(false);
@@ -336,7 +339,6 @@ console.log(formData)
                       {({ field }) => (
                         <TextField
                           {...field}
-                          onT
                           label="Your Comment"
                           variant="outlined"
                           size="small"

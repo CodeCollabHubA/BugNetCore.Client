@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useMyContext } from 'src/hooks/ContextProvider';
+import { useMyContext } from 'src/hooks/contextApi';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';

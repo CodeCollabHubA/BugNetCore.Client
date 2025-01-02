@@ -1,5 +1,5 @@
 import { PropTypes } from 'prop-types';
-import { useMyContext } from 'src/hooks/ContextProvider';
+import { useMyContext } from 'src/hooks/contextApi';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
 import { Formik, Form, Field,ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -28,7 +28,7 @@ const BugModal = ({ open, handleClose, bug}) => {
 
 
   const initialValues = {
-    bugTitle: bug?.title||'',
+    title: bug?.title||'',
     description: bug?.description||'',
     category: bug?.category||'',
     customerAssignedSeverity: bug?.customerAssignedSeverity||'',
@@ -37,7 +37,7 @@ const BugModal = ({ open, handleClose, bug}) => {
   };
 
   const validationSchema = Yup.object({
-    bugTitle: Yup.string().required('enter a title '),
+    title: Yup.string().required('enter a title '),
     description: Yup.string().required('enter a description'),
     category: Yup.string().required('select a category'),
     customerAssignedSeverity: Yup.string().required('select a severity'),
@@ -49,7 +49,7 @@ const BugModal = ({ open, handleClose, bug}) => {
     console.log('inside')
     const {id} = projects.find(e=>e.name === values.projectName)
     const formData = new FormData();
-    formData.title =values.bugTitle
+    formData.title =values.title
     formData.description =values.description
     formData.category =values.category
     formData.customerAssignedSeverity =values.customerAssignedSeverity

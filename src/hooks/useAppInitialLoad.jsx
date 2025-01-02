@@ -4,7 +4,7 @@ import { getAllBugsWithFilterPaginationAndSorting } from 'src/services/bugApiSer
 import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
 import { getAllUsersWithFilterPaginationAndSorting } from 'src/services/userApiService';
 import { getAllSupportRequestsWithFilterPaginationAndSorting } from 'src/services/supportRequestApiService';
-import { useMyContext } from './ContextProvider';
+import { useMyContext } from './contextApi';
 
 // const { bookApi, publisherApi, authorApi, userApi, borrowingApi } = apiEndPoints
 const useAppInitialLoad = () => {
@@ -12,9 +12,10 @@ const useAppInitialLoad = () => {
         setProjects,
         setBugs,
         setUsers,
+        user,
         setSupportRequests,
     } = useMyContext()
-
+// console.log(user,'this is app initial')
     const loadData = async () => {
         try {
             const { records: bugs } = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,25,1);
@@ -31,26 +32,10 @@ const useAppInitialLoad = () => {
                 console.error(err);
         }
     }
-
     useEffect(() => {
         loadData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
-
-    // useEffect(() => {
-    //     if (user?.userRole === "Admin") {
-    //         setBorrowingsActions(borrowings.filter(borrowing => ["Pending", "Borrowed"].includes(borrowing.status)))
-    //     } else if (user?.userRole === "User") {
-    //         setBorrowingsActions(borrowings.filter(borrowing => ["Pending", "Approved"].includes(borrowing.status)))
-    //     }
-    // }, [borrowings])
-
-    // useEffect(() => {
-    //     if (statusArray.includes(state?.status) && state?.message) {
-    //         toast[state.status](`${state.message} ${statusEmoji[state.status]}`)
-    //     }
-    //     setState("")
-    // }, [setState, state])
+    },[user])
 
 }
 

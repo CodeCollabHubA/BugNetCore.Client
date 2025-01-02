@@ -1,22 +1,26 @@
-import {useContext,createContext, useMemo, useState} from 'react'
-import PropTypes from 'prop-types'
+import { createContext, useContext, useMemo, useState } from 'react';
+import PropTypes from 'prop-types';
+
+
 
 const Context = createContext()
 
-export default function ContextProvider({ children }){
+const ContextProvider = ({ children }) => {
+    const [projects,setProjects]=useState([])
+    const [comment,setComment] = useState([])
     const [data,setData]= useState([])
-    const [projects,setProjects]= useState([])
     const [bugs,setBugs]= useState([])
-    const [users,setUsers]= useState([])
+    const [users,setUsers]= useState(null)
     const [supportRequests,setSupportRequests]= useState([])
 
-    const value =useMemo(()=>({
+    const value = useMemo(() => ({
+        projects,setProjects,
+        comment,setComment,
         data,setData,
-        projects, setProjects,
         bugs,setBugs,
         users,setUsers,
         supportRequests,setSupportRequests,
-    }),[projects,setProjects,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData])
+      }), [projects, setProjects,comment,setComment,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData]);
 
     return (
         <Context.Provider
@@ -24,7 +28,7 @@ export default function ContextProvider({ children }){
         >
             {children}
         </Context.Provider>
-    )
+    );
 }
 
 export const useMyContext = () => {
@@ -35,6 +39,7 @@ export const useMyContext = () => {
     return context;
 };
 
+export default ContextProvider;
 
 ContextProvider.propTypes = {
     children: PropTypes.object.isRequired,

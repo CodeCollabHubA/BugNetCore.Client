@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useMyContext } from 'src/hooks/ContextProvider';
+import { useMyContext } from 'src/hooks/contextApi';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';

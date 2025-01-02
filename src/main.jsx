@@ -5,7 +5,7 @@ import ThemeProvider from 'src/theme';
 
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'react-hot-toast';
-import ContextProvider from './sections/contextApi';
+import ContextProvider from './hooks/contextApi';
 import App from './app';
 
 // ----------------------------------------------------------------------

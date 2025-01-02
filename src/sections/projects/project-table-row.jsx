@@ -10,7 +10,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
-import { useMyContext } from 'src/hooks/ContextProvider';
+// import { useMyContext } from 'src/hooks/contextApi';
 import Label from 'src/components/label';
 import { deleteProject } from 'src/services/projectApiService';
 import toast from 'react-hot-toast';
@@ -21,12 +21,12 @@ import ProjectModal from './project-modal';
 // ----------------------------------------------------------------------
 // id, description, projectName, category, status;
 export default function ProjectTableRow({ project }) {
-  const {projects,setProjects}= useMyContext()
+  // const {projects,setProjects}= useMyContext()
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [edit,setEdit]=useState(project)
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);

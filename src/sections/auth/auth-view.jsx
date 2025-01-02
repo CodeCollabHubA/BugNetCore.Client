@@ -80,9 +80,9 @@ export default function AuthView({ isSignup }) {
     }
 
     if (res.success && !isSignup) {
+      
       setTimeout(
         ()=>{
-          
           router.push('/')
         }
     ,1000)
