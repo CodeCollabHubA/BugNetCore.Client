@@ -7,6 +7,7 @@ import DashboardLayout, {loader as dashboardLoader} from 'src/layouts/dashboard'
 import ResetPasswordPage from 'src/pages/auth-reset-pasword';
 import { loader as bugDetailsLoader} from 'src/sections/bug/view/bug-detail-view';
 import VerifyEmailPage from 'src/pages/auth-verify-email';
+import Profile from 'src/pages/profile';
 
 export const BugDetailPage = lazy(() => import('src/pages/bug-detail-page'));
 export const ChatPage = lazy(() => import('src/pages/chat'));
@@ -51,6 +52,12 @@ const routes = createBrowserRouter([
         element: <ProjectsPage />,
         id:'project',
    
+      },
+      { 
+        path: 'profile',
+        element: <Profile />,
+        id:'profile',
+    
       },
       { 
         path: 'supportRequest',

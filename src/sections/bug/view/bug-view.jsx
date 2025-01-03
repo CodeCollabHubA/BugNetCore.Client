@@ -48,13 +48,7 @@ export default function BugPage() {
   };
 
   const handleChangePage = async(event, newPage) => {
-    // TODO: Complete the code below to fetch the data as the user goes to next page
-    // const numberOfBugsNeeded = (newPage + 1) * rowsPerPage;
-    // const {records:dataOfPage} = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,numberOfBugsNeeded,newPage)
-    // console.log(numberOfBugsNeeded)
-    // console.log(dataOfPage)
-    // console.log(newPage)
-    // setBugs(dataOfPage)
+
     setPage(page+1);
   };
 
