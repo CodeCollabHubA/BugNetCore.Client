@@ -11,10 +11,11 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '50%',
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
+  borderRadius:'1rem'
 };
 
 // Options
@@ -25,14 +26,15 @@ const severities = ['Urgent', 'High', 'Medium', 'Low'];
 
 const BugModal = ({ open, handleClose, bug}) => {
   const {projects,bugs,setBugs}= useMyContext()
-
-
+  
+const projectOptions = projects.map(project=>project.name)
+console.log(projectOptions)
   const initialValues = {
-    title: bug?.title||'',
-    description: bug?.description||'',
-    category: bug?.category||'',
-    customerAssignedSeverity: bug?.customerAssignedSeverity||'',
-    projectName:bug?.project.name||'',
+    title: bug?.title||null,
+    description: bug?.description||null,
+    category: bug?.category||null,
+    customerAssignedSeverity: bug?.customerAssignedSeverity||null,
+    projectName:bug?.project.name||null,
     screenshotFile: bug?.screenshotFile||null,
   };
 
@@ -177,7 +179,8 @@ const BugModal = ({ open, handleClose, bug}) => {
                 {({ field }) => (
                   <Autocomplete
                   {...field}
-                  options={projects.map(project=>project.name)}
+                  
+                  options={projectOptions}
                   onChange={ (event,value) => {setFieldValue('projectName', value)}}
                   renderInput={(params) => (
                     <TextField

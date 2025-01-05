@@ -48,8 +48,7 @@ export default function BugPage() {
   };
 
   const handleChangePage = async(event, newPage) => {
-
-    setPage(page+1);
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

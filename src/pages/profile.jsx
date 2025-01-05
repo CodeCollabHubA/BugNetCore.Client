@@ -1,5 +1,6 @@
 import { Avatar, Box, Button, Container, Stack, TextField, Typography } from '@mui/material'
 import React from 'react'
+import Iconify from 'src/components/iconify'
 
 export default function Profile (){
     const user = JSON.parse(localStorage.getItem('user'))
@@ -13,7 +14,7 @@ export default function Profile (){
         <Button
           variant="contained"
           color="inherit"
-        //   startIcon={<Iconify icon="eva:plus-fill" />}
+          startIcon={<Iconify icon="material-symbols:edit-rounded" />}
         //   onClick={() => setOpenCreateModal(true)}
         >
           Edit
@@ -25,7 +26,7 @@ export default function Profile (){
                 sx={{ width: 200, height: 200, m: '0 auto'}}/>
                 <Box size={{ xs: 6, md: 8 }} padding={4}>
                   <Box sx={{display:'grid',gridTemplateColumns: 'repeat(2,1fr)',gap:3}} spacing={2}>
-                    <TextField  id="standard-basic" label="Name" variant="standard"
+                    <TextField  id="standard-basic" label="User Name" variant="standard"
                       value={user.username}
                       multiline
                       maxRows={3}
@@ -46,9 +47,6 @@ export default function Profile (){
                       maxRows={3}
                     /> 
                   </Box>
-        {/* <TextField id="standard-basic" label="Phone" variant="standard" />
-        <TextField id="standard-basic" label="Email" variant="standard" />
-        <TextField id="standard-basic" label="Country" variant="standard" /> */}
                 </Box>
       </Box>
     </Container>

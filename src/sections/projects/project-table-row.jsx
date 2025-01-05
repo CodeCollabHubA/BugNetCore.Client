@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link as ReactRouterLink } from 'react-router-dom';
+import { useMyContext } from 'src/hooks/contextApi';
 
 import Link from '@mui/material/Link';
 import Popover from '@mui/material/Popover';
@@ -21,13 +22,13 @@ import ProjectModal from './project-modal';
 // ----------------------------------------------------------------------
 // id, description, projectName, category, status;
 export default function ProjectTableRow({ project }) {
-  // const {projects,setProjects}= useMyContext()
+  const {projects,setProjects}= useMyContext()
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [edit,setEdit]=useState(project)
   // const navigate = useNavigate();
-
+console.log(projects)
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
@@ -41,6 +42,9 @@ export default function ProjectTableRow({ project }) {
   const handleProjectDeletion = async () => {
     const asyncOperation = async () => {
       setOpenDeleteDialog(false);
+      const newProjects = [...projects]
+      newProjects.filter(item=>item.id === project.id)
+      setProjects(newProjects)
       const data = await deleteProject(project.id,project.rowVersion);
       return data
 

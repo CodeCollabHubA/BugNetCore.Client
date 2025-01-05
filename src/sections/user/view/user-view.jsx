@@ -94,6 +94,7 @@ export default function UserPage() {
     comparator: getComparator(order, orderBy),
     filterName,
   });
+  console.log(users)
 
   const notFound = !dataFiltered.length && !!filterName;
 

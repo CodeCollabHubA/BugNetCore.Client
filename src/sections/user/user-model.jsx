@@ -26,7 +26,7 @@ const userRole = ["Admin", "Customer","Dev"];
 const UserModal = ({ open, handleClose, user}) => {
 
   const {users,setUsers}=useMyContext()
-
+console.log(users)
   const initialValues = {
     userRole:user?.role||'',
   };
