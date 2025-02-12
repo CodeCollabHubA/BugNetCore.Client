@@ -8,7 +8,7 @@ import { useMyContext } from './contextApi';
 
 // const { bookApi, publisherApi, authorApi, userApi, borrowingApi } = apiEndPoints
 const useAppInitialLoad = (user) => {
-    // console.log(user,'from app init')
+    console.log(user,'from app init')
     const {
         setProjects,
         setBugs,

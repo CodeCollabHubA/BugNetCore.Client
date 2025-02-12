@@ -6,7 +6,10 @@ import PropTypes from 'prop-types';
 const Context = createContext()
 
 const ContextProvider = ({ children }) => {
-    const [user,setUser]=useState(null)
+    const [user,setUser]=useState(()=>{
+        const savedUser=localStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    })
     const [projects,setProjects]=useState([])
     const [comment,setComment] = useState([])
     const [developers,setDevelopers]= useState([])

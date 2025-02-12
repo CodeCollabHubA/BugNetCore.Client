@@ -26,6 +26,7 @@ const statusColor = {
   Closed: 'info',
 };
 export default function SupportRequestTableRow({ SR, user }) {
+  console.log(user)
   const [open, setOpen] = useState(null);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
