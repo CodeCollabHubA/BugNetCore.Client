@@ -1,5 +1,4 @@
 import { useState } from 'react';
-
 import { useMyContext } from 'src/hooks/contextApi';
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
@@ -17,7 +16,8 @@ import TableNoData from '../table-no-data';
 // ----------------------------------------------------------------------
 
 export default function SupportRequestView() {
-  const {supportRequests}= useMyContext()
+  const {supportRequests,user:currentUser}= useMyContext()
+  // console.log(currentUser,'from SR row page')
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -28,7 +28,6 @@ export default function SupportRequestView() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const currentUser = JSON.parse(localStorage.user);
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
     if (id !== '') {
@@ -38,20 +37,7 @@ export default function SupportRequestView() {
   };
 
   const handleChangePage = async (event, newPage) => {
-    // const numberOfSupportRequestsNeeded = (newPage + 1) * rowsPerPage;
-    // const { records: dataOfPage } = await getAllSupportRequestsWithFilterPaginationAndSorting(
-    //   null,
-    //   null,
-    //   null,
-    //   null,
-    //   numberOfSupportRequestsNeeded,
-    //   newPage
-    // );
-    // console.log(numberOfSupportRequestsNeeded);
-    // console.log(dataOfPage);
-    // console.log(newPage);
-    // setSupportRequests(dataOfPage);
-    setPage(page+1);
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

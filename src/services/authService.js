@@ -1,6 +1,5 @@
 import { redirect } from 'react-router-dom';
 import toast from 'react-hot-toast';
-
 import { jwtDecode } from 'jwt-decode';
 
 import apiEndPoints from './apiEndPoints';
@@ -54,7 +53,7 @@ export async function verifyEmail(token) {
     console.log(error);
   }
 }
-export async function login(email, password) {
+export async function login(email, password,setUser) {
 
 
   const response = {
@@ -70,7 +69,7 @@ export async function login(email, password) {
         console.log(res,'auth')
         const jwtToken = user.accessToken;
       
-        storeTokenInLocalStorage(jwtToken, '');
+        storeTokenInLocalStorage(jwtToken, '',setUser);
         return `Login successful`;
       },
       duration: 3000,
@@ -129,10 +128,9 @@ export async function confirmPasswordReset(token, newPassword, confirmPassword) 
   return response;
 }
 
-export async function storeTokenInLocalStorage(jwtToken, toastMessage = 'Login successful') {
+export async function storeTokenInLocalStorage(jwtToken, toastMessage = 'Login successful',setUser) {
   localStorage.setItem('token', jwtToken);
   const decodedToken = jwtDecode(jwtToken);
-console.log(decodedToken)
   const expiration = decodedToken.exp;
   localStorage.setItem('expiration', expiration);
 
@@ -140,8 +138,8 @@ console.log(decodedToken)
  
 
   const { data: user } = await http.get(`${userApi}/${userId}`);
-  console.log(user,'from auth services')
- 
+  // console.log(user,'from auth services')
+  setUser(user)
   localStorage.setItem('user', JSON.stringify(user));
 
   localStorage.setItem('role', user.userRole);

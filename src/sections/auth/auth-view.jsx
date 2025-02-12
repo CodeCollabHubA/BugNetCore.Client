@@ -21,6 +21,7 @@ import { bgGradient } from 'src/theme/css';
 import { RouterLink } from 'src/routes/components';
 import Logo from 'src/components/logo';
 import Iconify from 'src/components/iconify';
+import { useMyContext } from 'src/hooks/contextApi';
 import { login, storeTokenInLocalStorage, getAuthToken, signUp } from 'src/services/authService';
 import apiEndPoints from 'src/services/apiEndPoints';
 
@@ -37,6 +38,7 @@ export default function AuthView({ isSignup }) {
   const theme = useTheme();
 
   const router = useRouter();
+  const{setUser}=useMyContext()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -75,7 +77,7 @@ export default function AuthView({ isSignup }) {
     if (isSignup) {
       res = await signUp(username, email, password, confirmPassword);
     } else {
-      res = await login(email, password);
+      res = await login(email, password,setUser);
       
     }
 

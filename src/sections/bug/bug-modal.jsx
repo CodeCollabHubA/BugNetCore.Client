@@ -28,23 +28,22 @@ const BugModal = ({ open, handleClose, bug}) => {
   const {projects,bugs,setBugs}= useMyContext()
   
 const projectOptions = projects.map(project=>project.name)
-console.log(projectOptions)
   const initialValues = {
     title: bug?.title||null,
     description: bug?.description||null,
     category: bug?.category||null,
     customerAssignedSeverity: bug?.customerAssignedSeverity||null,
     projectName:bug?.project.name||null,
-    screenshotFile: bug?.screenshotFile||null,
+    screenshotFile: bug?.screenshot||null,
   };
-
+// console.log(bug)
   const validationSchema = Yup.object({
     title: Yup.string().required('enter a title '),
     description: Yup.string().required('enter a description'),
     category: Yup.string().required('select a category'),
     customerAssignedSeverity: Yup.string().required('select a severity'),
     projectName: Yup.string().required('select a project name'),
-    screenshotFile:Yup.mixed()
+    screenshotFile:Yup.mixed()/* find a solution to this line as its not required to send  */
   });
 
   const handleSubmit = async (values) => {
@@ -59,10 +58,8 @@ console.log(projectOptions)
     formData.screenshotFile= values.screenshotFile
     formData.projectId =id
     formData.title= values.title
+    console.log(bug)
     
-    
-    // console.log(formData)
-
     try {
 
       if(bug){

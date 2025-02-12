@@ -7,16 +7,17 @@ import { getAllSupportRequestsWithFilterPaginationAndSorting } from 'src/service
 import { useMyContext } from './contextApi';
 
 // const { bookApi, publisherApi, authorApi, userApi, borrowingApi } = apiEndPoints
-const useAppInitialLoad = () => {
+const useAppInitialLoad = (user) => {
+    // console.log(user,'from app init')
     const {
         setProjects,
         setBugs,
         setUsers,
-        user,
         setSupportRequests,
     } = useMyContext()
 // console.log(user,'this is app initial')
     const loadData = async () => {
+        
         try {
             const { records: bugs } = await getAllBugsWithFilterPaginationAndSorting(null,null,null,null,25,1);
             setBugs(bugs)
@@ -26,7 +27,6 @@ const useAppInitialLoad = () => {
             setUsers(users)
             const { records: SupportRequests } = await getAllSupportRequestsWithFilterPaginationAndSorting(null,null,null,null,25,1);
             setSupportRequests(SupportRequests)
-
         }
         catch (err) {
                 console.error(err);

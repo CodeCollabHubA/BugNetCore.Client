@@ -4,12 +4,14 @@ import 'src/global.css';
 
 import Router from 'src/routes/sections';
 import useAppInitialLoad from './hooks/useAppInitialLoad';
+import { useMyContext } from './hooks/contextApi';
 
 
 // ----------------------------------------------------------------------
 
 export default function App() {
-  useAppInitialLoad()
+  const {user}=useMyContext()
+  useAppInitialLoad(user)
   
   return <Router />;
 }

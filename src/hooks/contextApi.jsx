@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 const Context = createContext()
 
 const ContextProvider = ({ children }) => {
+    const [user,setUser]=useState(null)
     const [projects,setProjects]=useState([])
     const [comment,setComment] = useState([])
+    const [developers,setDevelopers]= useState([])
     const [data,setData]= useState([])
     const [bugs,setBugs]= useState([])
     const [users,setUsers]= useState(null)
@@ -16,15 +18,17 @@ const ContextProvider = ({ children }) => {
     const value = useMemo(() => ({
         projects,setProjects,
         comment,setComment,
+        developers,setDevelopers,
         data,setData,
+        user,setUser,
         bugs,setBugs,
         users,setUsers,
         supportRequests,setSupportRequests,
-      }), [projects, setProjects,comment,setComment,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData]);
+      }), [user,setUser,projects, setProjects,developers,setDevelopers,comment,setComment,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData]);
 
-    return (
+      return (
         <Context.Provider
-            value={value}
+            value={value}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
         >
             {children}
         </Context.Provider>
