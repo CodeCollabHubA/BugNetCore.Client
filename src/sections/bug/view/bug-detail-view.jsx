@@ -11,7 +11,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useMyContext } from 'src/hooks/contextApi';
 import { Await, defer, useParams, useRouteLoaderData } from 'react-router-dom';
-import {createComment,getAllCommentsWithFilterPaginationAndSorting} from 'src/services/commentApiService';
+import {
+  createComment,
+  getAllCommentsWithFilterPaginationAndSorting,
+} from 'src/services/commentApiService';
 import { Suspense, useState, useRef, useEffect } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
@@ -24,8 +27,8 @@ import { updateBug } from 'src/services/bugApiService';
 
 export default function BugDetailView() {
   const { role } = localStorage;
-  
-  const {bugs,users}=useMyContext()
+
+  const { bugs, users, setBugs } = useMyContext();
   const severities = ['Urgent', 'High', 'Medium', 'Low'];
   const commentsContainerRef = useRef(null);
   const { bugId } = useParams();
@@ -33,21 +36,22 @@ export default function BugDetailView() {
   const [comments, setComment] = useState([...oldComments]);
   const [editing, setEditing] = useState(false);
   const bug = bugs.find((b) => b.id === bugId);
-  const developers = users?.filter(user=>user.userRole === 'Dev').map(element => element.username);
+  const developers = users
+    ?.filter((user) => user.userRole === 'Dev')
+    .map((element) => element.username);
   const initialValues = {
     commentText: '',
   };
   const status = ['Reported', 'InProgress', 'Resolved', 'Testing'];
   const devinitialValues = {
-    developerName: bug.dev.username||'',
-    adminAssignedPriority: bug.adminAssignedPriority||'',
+    developerName: bug.dev.username || '',
+    adminAssignedPriority: bug.adminAssignedPriority || '',
     status: bug.status,
   };
   const validationSchema = Yup.object({
     commentText: Yup.string().required(),
   });
   const devValidationSchema = Yup.object({
-   
     adminAssignedPriority: Yup.string(),
     status: Yup.string(),
   });
@@ -117,13 +121,12 @@ export default function BugDetailView() {
     }
   };
   const handleSave = async (values) => {
-
-    const developer = users.find(ele=>ele.username === values.developerName)
+    const developer = users.find((ele) => ele.username === values.developerName);
 
     const formData = new FormData();
-    formData.title = bug.title
-    formData.devId = developer.id||bug.dev?.id;
-    formData.customerAssignedSeverity = bug.customerAssignedSeverity ;
+    formData.title = bug.title;
+    formData.devId = developer.id || bug.dev?.id;
+    formData.customerAssignedSeverity = bug.customerAssignedSeverity;
     formData.adminAssignedPriority = values.adminAssignedPriority;
     formData.id = bug.id;
     formData.description = bug.description;
@@ -136,6 +139,15 @@ export default function BugDetailView() {
       // console.log(bugId,{...formData},"1st place of order")
       const data = await updateBug(bug.id, { ...formData });
       console.log('Edititng finish successfully:', data);
+      setBugs((prevBugs) =>
+        prevBugs.map((prevBug) => {
+          if (prevBug.id === bug.id) {
+            return { ...prevBug, ...data };
+          }
+          return prevBug;
+        })
+      );
+
       setEditing(false);
     } catch (ex) {
       console.log(ex);
