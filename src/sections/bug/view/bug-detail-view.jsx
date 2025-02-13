@@ -130,7 +130,8 @@ export default function BugDetailView() {
     formData.status = values.status || bug.status;
     formData.ProjectId = bug.project.id;
     formData.category = bug.category;
-console.log(formData)
+    formData.rowVersion = bug.rowVersion;
+    console.log(formData);
     try {
       // console.log(bugId,{...formData},"1st place of order")
       const data = await updateBug(bug.id, { ...formData });
