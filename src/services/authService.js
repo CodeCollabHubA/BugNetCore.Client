@@ -138,7 +138,6 @@ export async function storeTokenInLocalStorage(jwtToken, toastMessage = 'Login s
  
 
   const { data: user } = await http.get(`${userApi}/${userId}`);
-  // console.log(user,'from auth services')
   setUser(user)
   localStorage.setItem('user', JSON.stringify(user));
 

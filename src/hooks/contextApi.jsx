@@ -15,7 +15,7 @@ const ContextProvider = ({ children }) => {
     const [developers,setDevelopers]= useState([])
     const [data,setData]= useState([])
     const [bugs,setBugs]= useState([])
-    const [users,setUsers]= useState(null)
+    const [users,setUsers]= useState([])
     const [supportRequests,setSupportRequests]= useState([])
 
     const value = useMemo(() => ({

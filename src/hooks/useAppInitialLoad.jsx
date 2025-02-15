@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-// import { statusArray, statusEmoji } from '../utils/constant';
 import { getAllBugsWithFilterPaginationAndSorting } from 'src/services/bugApiService';
 import { getAllProjectsWithFilterPaginationAndSorting } from 'src/services/projectApiService';
 import { getAllUsersWithFilterPaginationAndSorting } from 'src/services/userApiService';
@@ -8,7 +7,6 @@ import { useMyContext } from './contextApi';
 
 // const { bookApi, publisherApi, authorApi, userApi, borrowingApi } = apiEndPoints
 const useAppInitialLoad = (user) => {
-    console.log(user,'from app init')
     const {
         setProjects,
         setBugs,

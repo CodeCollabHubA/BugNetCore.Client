@@ -1,9 +1,9 @@
 import { PropTypes } from 'prop-types';
-import { useMyContext } from 'src/hooks/contextApi';
 import { Modal, Box, TextField, Button, Autocomplete } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { updateUser } from 'src/services/userApiService';
+import { useMyContext } from 'src/hooks/contextApi';
 
 
 const style = {
@@ -24,34 +24,44 @@ const userRole = ["Admin", "Customer","Dev"];
 
 
 const UserModal = ({ open, handleClose, user}) => {
+const{user:currentUser}=useMyContext()
 
-  const {users,setUsers}=useMyContext()
-console.log(users)
   const initialValues = {
     userRole:user?.role||'',
+    username:user?.username||'',
+    phone:user?.phone||'N/A',
+    picture:user?.picture||''
   };
 
   const validationSchema = Yup.object({
     userRole: Yup.string(),
+    userName:Yup.string(),
+    Phone: Yup.number(),
+    picture:Yup.mixed()
   });
-
   const handleSubmit = async (values) => {
-    console.log('inside')
+console.log('inside')
     const formData = new FormData();
     formData.userRole =values.userRole
-    
-    console.log(formData)
-    console.log(user)
+    formData.username= values.username
+    formData.picturefile=values.picture
+    formData.id=user.id
+    formData.email=user.email
+
+
     try {
 
-        console.log('inside updatae')
-        user.userRole = formData.userRole
-        const data = await updateUser(user.id,user)
-        console.log('user Role changed successfully:',data)
-        const newUsers =[...users]
-        const index = users.indexOf(user)
-        newUsers[index]={...user}
-        setUsers(newUsers)
+        const data = await updateUser(user.id,{...formData})
+        console.log('user updated successfully:',data)
+
+        if(user.id===currentUser.id){
+          localStorage.setItem('user',JSON.stringify(data))
+        }
+
+        // const newUsers =[...users]
+        // const index = users.indexOf(user)
+        // newUsers[index]={...user}
+        // setUsers(newUsers)
         handleClose(); // Close modal after submission
 
     } catch (error) {
@@ -87,6 +97,42 @@ console.log(users)
                   />
                 )}
               </Field>
+              <Field name="username">
+                {({ field }) => (
+                      <TextField
+                        {...field}
+                        label="Username"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                      />
+                )}
+              </Field>
+              <Field name="phone">
+                {({ field }) => (
+                      <TextField
+                      {...field}
+
+                        label="Phone"
+                        variant="outlined"
+                        fullWidth
+                        margin="normal"
+                      />
+                )}
+              </Field>
+              <Field name="picture" >
+                              {({ field }) => (
+                                <TextField
+                                {...field}
+                                value={undefined}
+                                type='file'
+                                onChange={(event) => {setFieldValue('picture',event.currentTarget.files[0])                    
+                                }}
+                                fullWidth 
+                                margin="normal"
+                                />
+                              )}
+                            </Field>
 
               <Button type="submit" variant="contained" color="primary">
                 Save

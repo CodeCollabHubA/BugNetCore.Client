@@ -1,6 +1,6 @@
+import { useMyContext } from 'src/hooks/contextApi';
 import { useState } from 'react';
 
-import { useMyContext } from 'src/hooks/contextApi';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
@@ -89,12 +89,12 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  console.log(users)
   const dataFiltered = applyFilter({
     inputData: users,
     comparator: getComparator(order, orderBy),
     filterName,
   });
-  console.log(users)
 
   const notFound = !dataFiltered.length && !!filterName;
 
@@ -102,10 +102,6 @@ export default function UserPage() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
-
-        {/* <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New User
-        </Button> */}
       </Stack>
 
       <Card>
@@ -131,7 +127,6 @@ export default function UserPage() {
                   { id: 'email', label: 'Email' },
                   { id: 'role', label: 'Role' },
                   { id: 'isVerified', label: 'Verified', align: 'center' },
-                  // { id: 'status', label: 'Status',  },
                   { id: '' },
                 ]}
               />

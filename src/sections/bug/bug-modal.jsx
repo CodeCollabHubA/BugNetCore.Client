@@ -11,7 +11,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '50%',
+  width:{  xs: "100%", sm: "75%", md: "50%"},
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
@@ -208,7 +208,7 @@ const projectOptions = projects.map(project=>project.name)
                 )}
               </Field>
 
-              <Button type="submit" variant="contained" color="primary">
+              <Button sx={{width:'100%'}} type="submit" variant="contained" color="primary">
                 Submit
               </Button>
             </Form>

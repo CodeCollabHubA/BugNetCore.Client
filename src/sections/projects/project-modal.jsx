@@ -11,14 +11,16 @@ import { createProject, updateProject } from 'src/services/projectApiService';
 
 const style = {
   position: 'absolute',
+  // sx={{width:'100%'}}
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '50%',
+  width: { xs: "100%", sm: "75%", md: "50%"},
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
   borderRadius:'1rem'
+  
 };
 
 // Options

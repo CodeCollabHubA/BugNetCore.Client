@@ -57,12 +57,14 @@ export const createUser = async (req) => {
 
 
 export const updateUser = async (id, req) => {
+  console.log(id,req)
   const { data } = await http.put(`${userApi}/${id}`, req,{
     headers:{
       'Content-Type': 'multipart/form-data',
     }
   });
 
+  
   return data;
 };
 
