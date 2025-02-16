@@ -54,6 +54,7 @@ export const getsupportRequestById = async (id) => {
 };
 
 export const createsupportRequest = async (req) => {
+  console.log(req)
   const { data } = await http.post(`${supportRequestApi}`, req);
 
   return data;

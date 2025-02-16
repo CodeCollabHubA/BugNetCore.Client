@@ -57,7 +57,7 @@ export default function DashboardLayout() {
 
         </Suspense>
         <Main>
-          <Suspense>
+          <Suspense fallback={<CircularProgress sx={{position:'absolute',left:"50%",top:'50%'}}/>}>
             <Outlet />
           </Suspense>
         </Main>

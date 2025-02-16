@@ -57,11 +57,6 @@ console.log('inside')
         if(user.id===currentUser.id){
           localStorage.setItem('user',JSON.stringify(data))
         }
-
-        // const newUsers =[...users]
-        // const index = users.indexOf(user)
-        // newUsers[index]={...user}
-        // setUsers(newUsers)
         handleClose(); // Close modal after submission
 
     } catch (error) {

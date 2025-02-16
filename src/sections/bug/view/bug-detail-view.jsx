@@ -1,4 +1,4 @@
-import toast, { Toaster } from 'react-hot-toast';
+import  { Toaster } from 'react-hot-toast';
 // import { useMyContext } from 'src/hooks/ContextProvider';
 import * as Yup from 'yup';
 import Box from '@mui/material/Box';
@@ -19,6 +19,7 @@ import { Suspense, useState, useRef, useEffect } from 'react';
 import { Autocomplete, CircularProgress } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { updateBug } from 'src/services/bugApiService';
+import { createsupportRequest, updatesupportRequest } from 'src/services/supportRequestApiService';
 // import { forIn } from 'lodash';
 
 // import { bugs } from 'src/_mock/bug';
@@ -28,7 +29,7 @@ import { updateBug } from 'src/services/bugApiService';
 export default function BugDetailView() {
   const { role } = localStorage;
 
-  const { bugs, users, setBugs } = useMyContext();
+  const { bugs, users, setBugs,supportRequests } = useMyContext();
   const severities = ['Urgent', 'High', 'Medium', 'Low'];
   const commentsContainerRef = useRef(null);
   const { bugId } = useParams();
@@ -44,7 +45,7 @@ export default function BugDetailView() {
   };
   const status = ['Reported', 'InProgress', 'Resolved', 'Testing'];
   const devinitialValues = {
-    developerName: bug.dev.username || '',
+    developerName: bug.dev?.username || '',
     adminAssignedPriority: bug.adminAssignedPriority || '',
     status: bug.status,
   };
@@ -56,20 +57,31 @@ export default function BugDetailView() {
     status: Yup.string(),
   });
 
-  const sendSupportRequest = () =>
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 2000);
-    });
+  // const sendSupportRequest = () =>
+  //   new Promise((resolve, reject) => {
+  //     setTimeout(() => {
+  //       resolve();
+  //     }, 2000);
+  //   });
   //
-  const handleLiveSupportRequest = () => {
-    toast.promise(sendSupportRequest(), {
-      loading: 'Sending a Live Support Request...',
-      success: <b> Request Sent, you will be notified when an agent is available!</b>,
-      error: <b> Could not send a request, please try again later.</b>,
-      duration: 5000, // Set the duration in milliseconds (e.g. 5000 for 5 seconds)
-    });
+  const handleLiveSupportRequest = async(abug) => {
+    console.log(abug)
+    const body = {
+      bugId:abug.id,
+      status:"Pending",
+    }
+    try {
+      const response = await createsupportRequest(body)
+      console.log(response,'send support request successfuly')
+    } catch (error) {
+      console.log('faild to send support request')
+    }
+    // toast.promise(sendSupportRequest(), {
+    //   loading: 'Sending a Live Support Request...',
+    //   success: <b> Request Sent, you will be notified when an agent is available!</b>,
+    //   error: <b> Could not send a request, please try again later.</b>,
+    //   duration: 5000, // Set the duration in milliseconds (e.g. 5000 for 5 seconds)
+    // });
   };
 
   const editBugDetails = () => {
@@ -122,7 +134,9 @@ export default function BugDetailView() {
   };
   const handleSave = async (values) => {
     const developer = users.find((ele) => ele.username === values.developerName);
-
+    console.log(supportRequests)
+    const supp= supportRequests.find(ele=>ele.bug.id === bug.id)
+    console.log(supp)
     const formData = new FormData();
     formData.title = bug.title;
     formData.devId = developer.id || bug.dev?.id;
@@ -134,11 +148,21 @@ export default function BugDetailView() {
     formData.ProjectId = bug.project.id;
     formData.category = bug.category;
     formData.rowVersion = bug.rowVersion;
+    formData.screenshotFile = bug.screenshot
     console.log(formData);
     try {
       // console.log(bugId,{...formData},"1st place of order")
       const data = await updateBug(bug.id, { ...formData });
-      console.log('Edititng finish successfully:', data);
+      const body = {
+        id:supp.id,
+        rowVersion:supp.rowVersion,
+        status:supp.status,
+        supportDev:formData.devId
+      }
+console.log(body)
+      const res = await updatesupportRequest(supp.id,body)
+
+      console.log('Edititng finish successfully:', data,res);
       setBugs((prevBugs) =>
         prevBugs.map((prevBug) => {
           if (prevBug.id === bug.id) {
@@ -171,7 +195,7 @@ export default function BugDetailView() {
           >
             <Typography variant="h5">Bug Detail:</Typography>
             <Button
-              onClick={role === 'Admin' ? editBugDetails : handleLiveSupportRequest}
+              onClick={role === 'Admin' ? editBugDetails : ()=>handleLiveSupportRequest(bug)}
               variant="contained"
               size="medium"
               color="error"

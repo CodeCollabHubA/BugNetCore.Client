@@ -11,7 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import Label from 'src/components/label';
-import { deletesupportRequest } from 'src/services/supportRequestApiService';
+import { deletesupportRequest, updatesupportRequest } from 'src/services/supportRequestApiService';
 import toast from 'react-hot-toast';
 import Iconify from 'src/components/iconify';
 import ConfirmationDialog from '../confirmation-dialog';
@@ -26,17 +26,34 @@ const statusColor = {
   Closed: 'info',
 };
 export default function SupportRequestTableRow({ SR, user }) {
-  console.log(user)
-  const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   const navigate = useNavigate();
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
   };
-
-  const handleCloseMenu = () => {
-    setOpen(null);
+const handleCloseMenu=()=>{
+  setOpen(false)
+}
+  const handleAprove = async(supp) => {
+  //   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  // "rowVersion": 0,
+  // "action": "Approve",
+  // "supportDevId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+    const body={
+      id:supp.id,
+      rowVersion:supp.rowVersion,
+      action:'Approve',
+      supportDevId:supp.supportDevId
+    }
+    try {
+        const res= await updatesupportRequest(supp.id,body)  
+        console.log(res,'success update ')
+    } catch (error) {
+      console.log(error,'error maybe bad request')
+    }
+    setOpen(false);
   };
 
   const handleSupportRequestDeletion = async () => {
@@ -80,7 +97,7 @@ export default function SupportRequestTableRow({ SR, user }) {
         </TableCell>
 
         <TableCell>{SR.bug.title}</TableCell>
-        <TableCell>{SR.dev?.username || 'No Dev assigned'}</TableCell>
+        <TableCell>{SR.supportDev?.username || 'No Dev assigned'}</TableCell>
         <TableCell>{SR.customer.username}</TableCell>
 
         <TableCell>
@@ -102,25 +119,33 @@ export default function SupportRequestTableRow({ SR, user }) {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{ sx: { width: 140 } }}
       >
-        <MenuItem onClick={() => handleCloseMenu()}>
-          <Iconify icon="duo-icons:approved" sx={{ mr: 2 }} />
+        {
+          user.userRole==='Admin'?
+          <>
+          <MenuItem onClick={() => handleAprove(SR)} sx={{color:'success.main' }}>
+          <Iconify icon="duo-icons:approved" sx={{ mr: 2}} />
           Approve
         </MenuItem>
-        {/* , , ,  */}
         <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
-          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          <Iconify icon="material-symbols:cancel-rounded" sx={{ mr: 2 }} />
           Reject
         </MenuItem>
-
-        <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
-          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          </>
+          :<>
+           <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
+          <Iconify icon="material-symbols:cancel-outline-rounded" sx={{ mr: 2 }} />
           Cancel
         </MenuItem>
 
-        <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
+        {/* <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'info.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Close
-        </MenuItem>
+        </MenuItem> */}
+          </>
+        }
+        
+
+       
       </Popover>
     </>
   );

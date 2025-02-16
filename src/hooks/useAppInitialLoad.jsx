@@ -12,6 +12,7 @@ const useAppInitialLoad = (user) => {
         setBugs,
         setUsers,
         setSupportRequests,
+        setIsLoading
     } = useMyContext()
 // console.log(user,'this is app initial')
     const loadData = async () => {
@@ -31,7 +32,9 @@ const useAppInitialLoad = (user) => {
         }
     }
     useEffect(() => {
+        setIsLoading(true)
         loadData()
+        setIsLoading(false)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[user])
 

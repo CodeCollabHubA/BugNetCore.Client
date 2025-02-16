@@ -25,7 +25,6 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 
 export default function UserPage() {
   const{users}=useMyContext()
-  
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -97,7 +96,7 @@ export default function UserPage() {
   });
 
   const notFound = !dataFiltered.length && !!filterName;
-
+  
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>

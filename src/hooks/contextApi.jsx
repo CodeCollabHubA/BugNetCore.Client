@@ -17,6 +17,7 @@ const ContextProvider = ({ children }) => {
     const [bugs,setBugs]= useState([])
     const [users,setUsers]= useState([])
     const [supportRequests,setSupportRequests]= useState([])
+    const [isLoading,setIsLoading]=useState(false)
 
     const value = useMemo(() => ({
         projects,setProjects,
@@ -27,7 +28,8 @@ const ContextProvider = ({ children }) => {
         bugs,setBugs,
         users,setUsers,
         supportRequests,setSupportRequests,
-      }), [user,setUser,projects, setProjects,developers,setDevelopers,comment,setComment,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData]);
+        isLoading,setIsLoading,
+      }), [user,setUser,projects,setProjects,isLoading,setIsLoading,developers,setDevelopers,comment,setComment,bugs,setBugs,supportRequests,setSupportRequests,users,setUsers,data,setData]);
 
       return (
         <Context.Provider
