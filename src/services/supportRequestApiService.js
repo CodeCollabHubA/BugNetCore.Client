@@ -59,8 +59,13 @@ export const createsupportRequest = async (req) => {
 
   return data;
 };
+export const updateActionSR=async(req)=>{
+  const { data } = await http.put(`${supportRequestApi}/act-on-support-request`, req);
 
+  return data;
+}
 export const updatesupportRequest = async (id, req) => {
+  
   const { data } = await http.put(`${supportRequestApi}/${id}`, req,{
     headers:{
       'Content-Type': 'multipart/form-data',

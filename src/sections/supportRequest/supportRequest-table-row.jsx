@@ -11,10 +11,11 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 
 import Label from 'src/components/label';
-import { deletesupportRequest, updatesupportRequest } from 'src/services/supportRequestApiService';
+import { deletesupportRequest, updatesupportRequest} from 'src/services/supportRequestApiService';
 import toast from 'react-hot-toast';
 import Iconify from 'src/components/iconify';
 import ConfirmationDialog from '../confirmation-dialog';
+import SupportRequestModal from './supportRequest-modal';
 
 // ----------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ const statusColor = {
 export default function SupportRequestTableRow({ SR, user }) {
   const [open, setOpen] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-
+  const [openCreateModal,setOpenCreateModal]=useState(false)
   const navigate = useNavigate();
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -37,23 +38,21 @@ const handleCloseMenu=()=>{
   setOpen(false)
 }
   const handleAprove = async(supp) => {
-  //   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  // "rowVersion": 0,
-  // "action": "Approve",
-  // "supportDevId": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-    const body={
-      id:supp.id,
-      rowVersion:supp.rowVersion,
-      action:'Approve',
-      supportDevId:supp.supportDevId
+    
+      const body={
+        id:supp.id,
+        rowVersion:supp.rowVersion,
+        action:'approve',
+      }
+      try {
+          const res= await updatesupportRequest(supp.id,body)  
+          console.log(res,'success update')
+          setOpenCreateModal(true)//after aprove select the developer
+      } catch (error) {
+        console.log(error,'something wrong happend')
+      setOpen(false);
     }
-    try {
-        const res= await updatesupportRequest(supp.id,body)  
-        console.log(res,'success update ')
-    } catch (error) {
-      console.log(error,'error maybe bad request')
-    }
-    setOpen(false);
+  
   };
 
   const handleSupportRequestDeletion = async () => {
@@ -74,6 +73,7 @@ const handleCloseMenu=()=>{
 
   return (
     <>
+    <SupportRequestModal SR={SR}  open={openCreateModal} handleClose={() => setOpenCreateModal(false)}/>
       <ConfirmationDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
@@ -97,7 +97,7 @@ const handleCloseMenu=()=>{
         </TableCell>
 
         <TableCell>{SR.bug.title}</TableCell>
-        <TableCell>{SR.supportDev?.username || 'No Dev assigned'}</TableCell>
+        <TableCell>{SR.supportDev?.username || 'No Dev Assigned'}</TableCell>
         <TableCell>{SR.customer.username}</TableCell>
 
         <TableCell>
@@ -130,18 +130,18 @@ const handleCloseMenu=()=>{
           <Iconify icon="material-symbols:cancel-rounded" sx={{ mr: 2 }} />
           Reject
         </MenuItem>
+        <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'info.main' }}>
+          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+          Close
+        </MenuItem>
           </>
-          :<>
-           <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
+          :
+          <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'error.main' }}>
           <Iconify icon="material-symbols:cancel-outline-rounded" sx={{ mr: 2 }} />
           Cancel
         </MenuItem>
 
-        {/* <MenuItem onClick={() => setOpenDeleteDialog(true)} sx={{ color: 'info.main' }}>
-          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-          Close
-        </MenuItem> */}
-          </>
+        
         }
         
 
